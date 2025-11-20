@@ -21,6 +21,13 @@ import {
 } from "lucide-react";
 import { PricingTier, fallbackPricingTiers } from "../lib/pricing";
 import { User } from "../types";
+import {
+  BILLING_EMAIL,
+  COMPLIANCE_EMAIL,
+  COMPLIANCE_PHONE,
+  PAYMENT_GATEWAYS,
+  PCI_STATEMENT,
+} from "../details";
 
 export type PaymentMethod = "card" | "upi" | "gateway";
 
@@ -37,7 +44,7 @@ interface CheckoutProps {
   onOpenLegal?: (view: "terms" | "privacy" | "refund" | "billing") => void;
 }
 
-const paymentGateways = ["Razorpay", "PayU", "Stripe", "PayPal"];
+const paymentGateways = [...PAYMENT_GATEWAYS];
 
 export function Checkout({
   selectedPlan,
@@ -72,7 +79,7 @@ export function Checkout({
   });
   const [couponCode, setCouponCode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
-  const [selectedGateway, setSelectedGateway] = useState(paymentGateways[0]);
+  const [selectedGateway, setSelectedGateway] = useState<typeof paymentGateways[number]>(paymentGateways[0]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -349,7 +356,10 @@ export function Checkout({
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="gatewaySelect">Choose Gateway</Label>
-                    <Select value={selectedGateway} onValueChange={(value: string) => setSelectedGateway(value)}>
+                    <Select
+                      value={selectedGateway}
+                      onValueChange={(value: string) => setSelectedGateway(value as typeof paymentGateways[number])}
+                    >
                       <SelectTrigger id="gatewaySelect">
                         <SelectValue placeholder="Select a gateway" />
                       </SelectTrigger>
@@ -470,7 +480,8 @@ export function Checkout({
               </li>
             </ul>
             <div className="text-xs text-gray-500">
-              Need help with procurement? Email us at <span className="text-indigo-600">billing@qrgen.com</span>
+              Need help with procurement? Email us at {" "}
+              <span className="text-indigo-600">{BILLING_EMAIL}</span>
             </div>
           </Card>
 
@@ -519,8 +530,8 @@ export function Checkout({
               </li>
             </ul>
             <div className="text-xs text-gray-500">
-              For compliance or chargeback questions, contact <span className="text-indigo-600">compliance@qrgen.com</span>{" "}
-              or call +1-800-555-2173 (24/7).
+              For compliance or chargeback questions, contact {" "}
+              <span className="text-indigo-600">{COMPLIANCE_EMAIL}</span> or call {COMPLIANCE_PHONE}.
             </div>
           </Card>
         </div>

@@ -12,7 +12,40 @@ import { PrivacyPolicy } from "./components/legal/PrivacyPolicy";
 import { RefundCancellationPolicy } from "./components/legal/RefundCancellationPolicy";
 import { SubscriptionBillingPolicy } from "./components/legal/SubscriptionBillingPolicy";
 import { GDPRCompliance } from "./components/legal/GDPRCompliance";
-import { QrCode, LayoutDashboard, Home, DollarSign, LogIn, LogOut, History as HistoryIcon, Shield, Menu, X, Twitter, Linkedin, Github, Mail, Phone, MapPin, Facebook } from "lucide-react";
+import {
+  QrCode,
+  Menu,
+  X,
+  LogIn,
+  LogOut,
+  User as UserIcon,
+  CreditCard,
+  Bell,
+  ShieldCheck,
+  BarChart3,
+  Sparkles,
+  ChevronRight,
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Home,
+  LayoutDashboard,
+  History as HistoryIcon,
+  Shield,
+  DollarSign,
+  Github,
+} from "lucide-react";
+import {
+  COMPANY_NAME,
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE,
+  COMPANY_ADDRESS,
+  SOCIAL_LINKS,
+  PAYMENT_TAGLINE,
+} from "./details";
 import { Button } from "./components/ui/button";
 import { generateBearerToken } from "./lib/apiKey";
 import { supabase } from "./lib/supabaseClient";
@@ -797,19 +830,19 @@ export default function App() {
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <QrCode className="w-7 h-7 text-indigo-400" />
-                <span className="text-lg font-semibold text-black">QR Generator Pro</span>
+                <span className="text-lg font-semibold text-black">{COMPANY_NAME}</span>
               </div>
               <p className="leading-relaxed text-gray-300">
                 Professional QR code generation service trusted by businesses worldwide.
               </p>
               <div className="flex gap-4 text-gray-400">
-                <a href="https://linkedin.com/company/qrgen" aria-label="LinkedIn" className="hover:text-white transition-colors">
+                <a href={SOCIAL_LINKS.linkedin} aria-label="LinkedIn" className="hover:text-white transition-colors">
                   <Linkedin className="w-5 h-5" />
                 </a>
-                <a href="https://twitter.com/qrgen" aria-label="X" className="hover:text-white transition-colors">
+                <a href={SOCIAL_LINKS.twitter} aria-label="X" className="hover:text-white transition-colors">
                   <Twitter className="w-5 h-5" />
                 </a>
-                <a href="https://facebook.com/qrgen" aria-label="Facebook" className="hover:text-white transition-colors">
+                <a href={SOCIAL_LINKS.facebook} aria-label="Facebook" className="hover:text-white transition-colors">
                   <Facebook className="w-5 h-5" />
                 </a>
               </div>
@@ -901,22 +934,22 @@ export default function App() {
               <ul className="space-y-3 text-gray-400">
                 <li className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-indigo-400" />
-                  <a href="mailto:support@qrgenpro.com" className="hover:text-white transition-colors">support@qrgenpro.com</a>
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className="hover:text-white transition-colors">{SUPPORT_EMAIL}</a>
                 </li>
                 <li className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-indigo-400" />
-                  <a href="tel:+15551234567" className="hover:text-white transition-colors">+1 (555) 123-4567</a>
+                  <a href={`tel:${SUPPORT_PHONE}`} className="hover:text-white transition-colors">{SUPPORT_PHONE}</a>
                 </li>
                 <li className="flex items-start gap-2">
                   <MapPin className="w-4 h-4 text-indigo-400 mt-0.5" />
-                  <span>123 Tech Street, San Francisco, CA 94105</span>
+                  <span>{COMPANY_ADDRESS}</span>
                 </li>
               </ul>
             </div>
           </div>
 
           <div className="mt-12 border-t border-white/10 pt-6 text-xs text-gray-500 text-center">
-            <p>&copy; {new Date().getFullYear()} QR Generator Pro. All rights reserved. Payments secured by Stripe, PayPal, Razorpay & PayU.</p>
+            <p>&copy; {new Date().getFullYear()} {COMPANY_NAME}. All rights reserved. {PAYMENT_TAGLINE}</p>
           </div>
         </div>
       </footer>

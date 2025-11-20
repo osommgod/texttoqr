@@ -5,6 +5,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Badge } from "./ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import {
   Users,
   DollarSign,
@@ -17,6 +18,9 @@ import {
   Check,
   X,
   Crown,
+  Ticket,
+  Calendar,
+  Eye,
 } from "lucide-react";
 import {
   Select,
@@ -44,26 +48,57 @@ interface PlanConfig {
   active: boolean;
 }
 
+interface Coupon {
+  id: string;
+  code: string;
+  discount_percentage: number;
+  created_at: string;
+  expires_at: string;
+  usage_type: 'single' | 'multi';
+  used_by: any[];
+  is_active: boolean;
+  max_uses: number | null;
+  description: string | null;
+}
+
 interface AdminProps {
   currentUser: User;
 }
 
 export function Admin({ currentUser }: AdminProps) {
+  console.log("[Admin] component render start");
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [plans, setPlans] = useState<PlanConfig[]>([]);
   const [appConfig, setAppConfig] = useState<AppConfig | null>(null);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editingPlan, setEditingPlan] = useState<PlanType | null>(null);
+  const [isCreatingCoupon, setIsCreatingCoupon] = useState(false);
+  const [viewingCouponUsers, setViewingCouponUsers] = useState<Coupon | null>(null);
 
   const [defaultFreePlanLimit, setDefaultFreePlanLimit] = useState<string>("10");
   const [conversionResetPeriod, setConversionResetPeriod] = useState<string>("monthly");
   const [registrationMode, setRegistrationMode] = useState<"enabled" | "disabled" | "invite-only">("enabled");
 
+  const [newCoupon, setNewCoupon] = useState({
+    code: '',
+    discount_percentage: 10,
+    expires_at: '',
+    usage_type: 'multi' as 'single' | 'multi',
+    max_uses: null as number | null,
+    description: ''
+  });
+
+  // Debug: track when the viewingCouponUsers dialog state changes
+  useEffect(() => {
+    console.log("[Admin] viewingCouponUsers state changed:", viewingCouponUsers);
+  }, [viewingCouponUsers]);
+
   useEffect(() => {
     const loadAdminData = async () => {
-      const [{ data: userRows, error: userError }, { data: planRows, error: planError }, { data: configRows, error: configError }] =
+      const [{ data: userRows, error: userError }, { data: planRows, error: planError }, { data: configRows, error: configError }, { data: couponRows, error: couponError }] =
         await Promise.all([
           supabase
             .from("users_custom")
@@ -78,6 +113,10 @@ export function Admin({ currentUser }: AdminProps) {
             .eq("config_key", "global")
             .limit(1)
             .single(),
+          supabase
+            .from("coupons")
+            .select("*")
+            .order("created_at", { ascending: false }),
         ]);
 
       if (!userError && userRows) {
@@ -119,6 +158,10 @@ export function Admin({ currentUser }: AdminProps) {
         setDefaultFreePlanLimit(String(configRows.default_free_plan_limit ?? 10));
         setConversionResetPeriod(configRows.conversion_reset_period ?? "monthly");
         setRegistrationMode(configRows.enable_user_registration ? "enabled" : "disabled");
+      }
+
+      if (!couponError && couponRows) {
+        setCoupons(couponRows as Coupon[]);
       }
     };
 
@@ -341,6 +384,128 @@ export function Admin({ currentUser }: AdminProps) {
     }
   };
 
+  const handleCreateCoupon = async () => {
+    if (!newCoupon.code.trim()) {
+      alert('Coupon code is required');
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('coupons')
+      .insert([{
+        code: newCoupon.code.toUpperCase(),
+        discount_percentage: newCoupon.discount_percentage,
+        expires_at: newCoupon.expires_at,
+        usage_type: newCoupon.usage_type,
+        max_uses: newCoupon.max_uses,
+        description: newCoupon.description || null,
+        is_active: true
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Failed to create coupon:', error);
+      alert('Failed to create coupon: ' + error.message);
+      return;
+    }
+
+    if (data) {
+      setCoupons([data as Coupon, ...coupons]);
+      setIsCreatingCoupon(false);
+      setNewCoupon({
+        code: '',
+        discount_percentage: 10,
+        expires_at: '',
+        usage_type: 'multi',
+        max_uses: null,
+        description: ''
+      });
+    }
+  };
+
+  const handleUpdateCoupon = async (couponId: string, updates: Partial<Coupon>) => {
+    const { error } = await supabase
+      .from('coupons')
+      .update(updates)
+      .eq('id', couponId);
+
+    if (error) {
+      console.error('Failed to update coupon:', error);
+      return;
+    }
+
+    setCoupons(coupons.map(c => c.id === couponId ? { ...c, ...updates } : c));
+  };
+
+  const handleDeleteCoupon = async (couponId: string) => {
+    if (!confirm('Are you sure you want to delete this coupon?')) return;
+
+    const { error } = await supabase
+      .from('coupons')
+      .delete()
+      .eq('id', couponId);
+
+    if (error) {
+      console.error('Failed to delete coupon:', error);
+      return;
+    }
+
+    setCoupons(coupons.filter(c => c.id !== couponId));
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const isExpired = (dateString: string) => {
+    return new Date(dateString) < new Date();
+  };
+
+  const handleViewCouponUsers = (coupon: Coupon) => {
+    try {
+      console.log("[Admin] handleViewCouponUsers called with coupon:", coupon);
+      let usedBy = coupon.used_by;
+
+      // FIX: Handle case where Supabase returns JSONB as a string
+      if (typeof usedBy === 'string') {
+        try {
+          usedBy = JSON.parse(usedBy);
+        } catch (e) {
+          console.error('Error parsing used_by JSON:', e);
+          usedBy = [];
+        }
+      }
+
+      // Ensure it is an array
+      if (!Array.isArray(usedBy)) {
+        usedBy = [];
+      }
+
+      console.log("[Admin] Parsed used_by value:", usedBy);
+
+      const usageCount = usedBy.length;
+
+      if (usageCount === 0) {
+        alert('0 users have used this coupon');
+        console.log("[Admin] Coupon has 0 uses, dialog will not open.");
+        return;
+      }
+
+      // Update state with the PARSED data so the Dialog can read it
+      setViewingCouponUsers({ ...coupon, used_by: usedBy });
+      console.log("[Admin] viewingCouponUsers set with parsed used_by.");
+
+    } catch (error) {
+      console.error('Error viewing coupon users:', error);
+      alert('Something went wrong trying to view the users list.');
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-6 relative">
       {/* Header */}
@@ -410,9 +575,10 @@ export function Admin({ currentUser }: AdminProps) {
 
       {/* Tabs */}
       <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3 max-w-md">
+        <TabsList className="bg-muted text-muted-foreground h-9 inline-flex w-full max-w-md items-center justify-center rounded-xl p-[3px] mx-auto">
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="plans">Plans</TabsTrigger>
+          <TabsTrigger value="coupons">Coupons</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
 
@@ -449,7 +615,7 @@ export function Admin({ currentUser }: AdminProps) {
                   {filteredUsers.map((user) => {
                     const limit = getPlanLimits(user.plan);
                     const usagePercent = (user.conversionsUsed / limit) * 100;
-                    
+
                     return (
                       <tr key={user.id} className="border-b hover:bg-gray-50">
                         <td className="p-4">
@@ -558,7 +724,7 @@ export function Admin({ currentUser }: AdminProps) {
                           {plan.active ? "Active" : "Inactive"}
                         </Badge>
                       </div>
-                      
+
                       {editingPlan === plan.id ? (
                         <div className="grid md:grid-cols-3 gap-4 mt-4">
                           <div>
@@ -635,6 +801,196 @@ export function Admin({ currentUser }: AdminProps) {
           </div>
         </TabsContent>
 
+        {/* Coupons Tab */}
+        <TabsContent value="coupons" className="space-y-4">
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-gray-900">Coupon Management</h3>
+              <Button onClick={() => setIsCreatingCoupon(!isCreatingCoupon)}>
+                {isCreatingCoupon ? <X className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+                {isCreatingCoupon ? 'Cancel' : 'Create Coupon'}
+              </Button>
+            </div>
+
+            {isCreatingCoupon && (
+              <div className="grid md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg mb-4">
+                <div>
+                  <Label>Coupon Code *</Label>
+                  <Input
+                    placeholder="SAVE20"
+                    value={newCoupon.code}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, code: e.target.value.toUpperCase() })}
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label>Discount Percentage *</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={newCoupon.discount_percentage}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, discount_percentage: parseInt(e.target.value) })}
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label>Expires At *</Label>
+                  <Input
+                    type="datetime-local"
+                    value={newCoupon.expires_at}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, expires_at: e.target.value })}
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label>Usage Type</Label>
+                  <Select
+                    value={newCoupon.usage_type}
+                    onValueChange={(value: 'single' | 'multi') => setNewCoupon({ ...newCoupon, usage_type: value })}
+                  >
+                    <SelectTrigger className="mt-2">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="single">Single Use</SelectItem>
+                      <SelectItem value="multi">Multi Use</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Max Uses (Optional)</Label>
+                  <Input
+                    type="number"
+                    placeholder="Leave empty for unlimited"
+                    value={newCoupon.max_uses || ''}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, max_uses: e.target.value ? parseInt(e.target.value) : null })}
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label>Description</Label>
+                  <Input
+                    placeholder="e.g., Summer sale discount"
+                    value={newCoupon.description}
+                    onChange={(e) => setNewCoupon({ ...newCoupon, description: e.target.value })}
+                    className="mt-2"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <Button onClick={handleCreateCoupon} className="w-full">
+                    Create Coupon
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Card>
+
+          <Card className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b">
+                  <tr>
+                    <th className="text-left p-4 text-sm text-gray-600">Code</th>
+                    <th className="text-left p-4 text-sm text-gray-600">Discount</th>
+                    <th className="text-left p-4 text-sm text-gray-600">Type</th>
+                    <th className="text-left p-4 text-sm text-gray-600">Expires</th>
+                    <th className="text-left p-4 text-sm text-gray-600">Usage</th>
+                    <th className="text-left p-4 text-sm text-gray-600">Status</th>
+                    <th className="text-left p-4 text-sm text-gray-600">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {coupons.map((coupon) => {
+                    const usageCount = Array.isArray(coupon.used_by) ? coupon.used_by.length : 0;
+                    const expired = isExpired(coupon.expires_at);
+
+                    return (
+                      <tr key={coupon.id} className="border-b hover:bg-gray-50">
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <Ticket className="w-4 h-4 text-indigo-600" />
+                            <span className="font-mono font-semibold text-gray-900">{coupon.code}</span>
+                          </div>
+                          {coupon.description && (
+                            <p className="text-xs text-gray-500 mt-1">{coupon.description}</p>
+                          )}
+                        </td>
+                        <td className="p-4">
+                          <Badge variant="secondary">{coupon.discount_percentage}% OFF</Badge>
+                        </td>
+                        <td className="p-4">
+                          <Badge variant="outline" className="capitalize">
+                            {coupon.usage_type}
+                          </Badge>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-gray-400" />
+                            <span className={`text-sm ${expired ? 'text-red-600' : 'text-gray-700'}`}>
+                              {formatDate(coupon.expires_at)}
+                            </span>
+                          </div>
+                          {expired && <p className="text-xs text-red-600 mt-1">Expired</p>}
+                        </td>
+                        <td className="p-4">
+                          <div className="text-sm text-gray-700 font-medium">
+                            {usageCount}{coupon.max_uses ? ` / ${coupon.max_uses}` : ''}
+                          </div>
+                        </td>
+                        <td className="p-4">
+                          <Badge variant={coupon.is_active && !expired ? "default" : "secondary"}>
+                            {coupon.is_active && !expired ? "Active" : "Inactive"}
+                          </Badge>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                console.log("[Admin] eye button clicked for coupon:", coupon.code);
+                                handleViewCouponUsers(coupon);
+                              }}
+                              title="View users who used this coupon"
+                            >
+                              <Eye className="w-4 h-4 text-blue-600" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleUpdateCoupon(coupon.id, { is_active: !coupon.is_active })}
+                              title={coupon.is_active ? "Deactivate" : "Activate"}
+                            >
+                              {coupon.is_active ? <X className="w-4 h-4" /> : <Check className="w-4 h-4" />}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDeleteCoupon(coupon.id)}
+                              title="Delete coupon"
+                            >
+                              <Trash2 className="w-4 h-4 text-red-600" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {coupons.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="p-8 text-center text-gray-500">
+                        No coupons created yet. Click "Create Coupon" to add one.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </TabsContent>
+
         {/* Settings Tab */}
         <TabsContent value="settings" className="space-y-4">
           <Card className="p-6">
@@ -657,7 +1013,7 @@ export function Admin({ currentUser }: AdminProps) {
                 <Label>Conversion Reset Period</Label>
                 <Select
                   value={conversionResetPeriod}
-                  onValueChange={(value) => setConversionResetPeriod(value)}
+                  onValueChange={(value: string) => setConversionResetPeriod(value)}
                 >
                   <SelectTrigger className="max-w-xs mt-2">
                     <SelectValue />
@@ -675,7 +1031,7 @@ export function Admin({ currentUser }: AdminProps) {
                 <Label>Enable User Registration</Label>
                 <Select
                   value={registrationMode}
-                  onValueChange={(value) => setRegistrationMode(value as any)}
+                  onValueChange={(value: string) => setRegistrationMode(value as any)}
                 >
                   <SelectTrigger className="max-w-xs mt-2">
                     <SelectValue />
@@ -742,6 +1098,81 @@ export function Admin({ currentUser }: AdminProps) {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* View Coupon Users Modal (custom overlay instead of Radix Dialog) */}
+      {viewingCouponUsers && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-4 p-6 relative">
+            <button
+              type="button"
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              onClick={() => setViewingCouponUsers(null)}
+            >
+              ×
+            </button>
+
+            <div className="mb-2">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Users Who Used Coupon: {viewingCouponUsers.code}
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                {viewingCouponUsers.description || 'View all users who have claimed this coupon'}
+              </p>
+            </div>
+
+            <div className="mt-4">
+              {Array.isArray(viewingCouponUsers.used_by) && viewingCouponUsers.used_by.length > 0 ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-sm text-gray-600">
+                      Total uses: <span className="font-semibold">{viewingCouponUsers.used_by.length}</span>
+                    </p>
+                    <Badge variant="secondary">
+                      {viewingCouponUsers.discount_percentage}% OFF
+                    </Badge>
+                  </div>
+
+                  <div className="border rounded-lg overflow-hidden">
+                    <table className="w-full">
+                      <thead className="bg-gray-50 border-b">
+                        <tr>
+                          <th className="text-left p-3 text-sm font-medium text-gray-600">#</th>
+                          <th className="text-left p-3 text-sm font-medium text-gray-600">User ID</th>
+                          <th className="text-left p-3 text-sm font-medium text-gray-600">Claimed Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {viewingCouponUsers.used_by.map((usage: any, index: number) => (
+                          <tr key={index} className="border-b last:border-b-0 hover:bg-gray-50">
+                            <td className="p-3 text-sm text-gray-900">{index + 1}</td>
+                            <td className="p-3 text-sm font-mono text-gray-700">
+                              {usage.user_id?.substring(0, 8)}...
+                            </td>
+                            <td className="p-3 text-sm text-gray-600">
+                              {usage.claimed_date ? new Date(usage.claimed_date).toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              }) : 'N/A'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-500">No users have used this coupon yet</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
