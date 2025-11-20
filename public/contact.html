@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contact Us – QR Generator Pro</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" href="/favicon.ico" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --indigo-50:#eef2ff;
+      --indigo-100:#e0e7ff;
+      --indigo-600:#4f46e5;
+      --indigo-700:#4338ca;
+      --gray-50:#f9fafb;
+      --gray-100:#f3f4f6;
+      --gray-200:#e5e7eb;
+      --gray-300:#d1d5db;
+      --gray-400:#9ca3af;
+      --gray-500:#6b7280;
+      --gray-600:#4b5563;
+      --gray-700:#374151;
+      --gray-800:#1f2937;
+      --gray-900:#111827;
+      --radius-md:0.75rem;
+      --radius-lg:1rem;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--gray-900);
+      background:linear-gradient(to bottom right,var(--indigo-50),#ffffff);
+      line-height:1.5;
+    }
+    a{text-decoration:none;color:inherit}
+    .container{max-width:1120px;margin:0 auto;padding:0 1rem}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      border-radius:999px;border:1px solid transparent;
+      font-size:0.9rem;font-weight:600;
+      padding:0.7rem 1.4rem;cursor:pointer;
+      transition:.15s all ease;
+      white-space:nowrap;
+    }
+    .btn-primary{background:var(--indigo-600);color:#fff;border-color:var(--indigo-600);}
+    .btn-primary:hover{background:var(--indigo-700);}
+    .btn-outline{background:#fff;border-color:var(--gray-300);color:var(--gray-800);}
+    .btn-outline:hover{background:var(--gray-50);}
+    .input,textarea{
+      width:100%;padding:0.7rem 0.8rem;
+      border-radius:0.5rem;
+      border:1px solid var(--gray-300);
+      font-size:0.9rem;
+      outline:none;
+      transition:border-color .15s, box-shadow .15s;
+      resize:vertical;
+      min-height:44px;
+    }
+    .input:focus,textarea:focus{
+      border-color:var(--indigo-600);
+      box-shadow:0 0 0 1px rgba(79,70,229,.35);
+    }
+    header{
+      background:#ffffffdd;
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid rgba(15,23,42,.06);
+      position:sticky;top:0;z-index:10;
+    }
+    footer{
+      background:#050b18;
+      color:var(--gray-300);
+      padding:2.5rem 0;
+      font-size:0.85rem;
+      margin-top:3rem;
+    }
+    .badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      border-radius:999px;
+      border:1px solid rgba(79,70,229,.15);
+      padding:0.25rem 0.7rem;
+      font-size:0.7rem;font-weight:500;
+      color:var(--indigo-700);
+      background:var(--indigo-50);
+    }
+    .card{
+      background:#fff;
+      border-radius:var(--radius-lg);
+      border:1px solid var(--gray-200);
+      box-shadow:0 12px 40px rgba(15,23,42,.08);
+      padding:1.75rem;
+    }
+    .grid{
+      display:grid;
+      gap:1.75rem;
+    }
+    @media (min-width:768px){
+      .grid-2{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container" style="padding:0.9rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;">
+      <div style="display:flex;align-items:center;gap:0.55rem;">
+        <i data-lucide="qr-code" style="width:26px;height:26px;color:#4f46e5;"></i>
+        <span style="font-weight:600;color:#111827;">QR Generator Pro</span>
+      </div>
+      <nav style="display:flex;align-items:center;gap:0.75rem;font-size:0.85rem;">
+        <!-- <a href="/" style="color:var(--gray-700);">Home</a>
+        <a href="/features.html" style="color:var(--gray-700);">Features</a>
+        <a href="/" onclick="event.preventDefault();goToAppView('pricing');" style="color:var(--gray-700);">Pricing</a> -->
+        <button class="btn btn-outline" onclick="goToAppView('login');">Login</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding:3rem 1rem 4rem;">
+    <div style="max-width:680px;margin:0 auto 2.5rem;text-align:center;">
+      <span class="badge">We usually respond within one business day</span>
+      <h1 style="margin-top:0.75rem;font-size:2rem;font-weight:700;color:#0f172a;">Contact our team</h1>
+      <p style="margin-top:0.5rem;font-size:0.95rem;color:var(--gray-600);">
+        Have questions about pricing, integrations, or enterprise plans? Send us a message and well get back to you as soon as possible.
+      </p>
+    </div>
+
+    <div class="grid grid-2">
+      <!-- Contact form -->
+      <section class="card">
+        <form id="contact-form">
+          <div style="display:flex;flex-direction:column;gap:0.9rem;">
+            <div>
+              <label for="name" style="display:block;font-size:0.8rem;font-weight:500;color:var(--gray-700);margin-bottom:0.25rem;">Full name</label>
+              <input id="name" name="name" class="input" placeholder="Alex Johnson" required />
+            </div>
+            <div>
+              <label for="email" style="display:block;font-size:0.8rem;font-weight:500;color:var(--gray-700);margin-bottom:0.25rem;">Work email</label>
+              <input id="email" name="email" type="email" class="input" placeholder="you@company.com" required />
+            </div>
+            <div>
+              <label for="topic" style="display:block;font-size:0.8rem;font-weight:500;color:var(--gray-700);margin-bottom:0.25rem;">Topic</label>
+              <select id="topic" name="topic" class="input" style="appearance:none;background-image:linear-gradient(45deg,transparent 50%,#6b7280 50%),linear-gradient(135deg,#6b7280 50%,transparent 50%);background-position:calc(100% - 12px) calc(50% - 3px),calc(100% - 7px) calc(50% - 3px);background-size:5px 5px,5px 5px;background-repeat:no-repeat;">
+                <option>General question</option>
+                <option>Pricing & billing</option>
+                <option>Technical support</option>
+                <option>Partnership</option>
+              </select>
+            </div>
+            <div>
+              <label for="message" style="display:block;font-size:0.8rem;font-weight:500;color:var(--gray-700);margin-bottom:0.25rem;">How can we help?</label>
+              <textarea id="message" name="message" rows="4" class="input" placeholder="Tell us a bit about what youre looking for..." required></textarea>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;margin-top:0.5rem;flex-wrap:wrap;">
+              <button type="submit" class="btn btn-primary">Send message</button>
+              <p id="form-status" style="font-size:0.8rem;color:var(--gray-500);"></p>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Contact details -->
+      <aside class="card" style="background:linear-gradient(135deg,var(--indigo-600),var(--indigo-700));color:#e5e7eb;">
+        <h2 style="font-size:1.1rem;font-weight:600;margin-bottom:0.75rem;">Other ways to reach us</h2>
+        <p style="font-size:0.9rem;color:#e5e7eb;margin-bottom:1.25rem;">
+          Prefer email or a quick call? Use any of the channels below and well make sure your request gets to the right person.
+        </p>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.75rem;font-size:0.9rem;">
+          <li style="display:flex;align-items:flex-start;gap:0.5rem;">
+            <i data-lucide="mail" style="width:18px;height:18px;margin-top:2px;color:#c7d2fe;"></i>
+            <div>
+              <p style="font-weight:500;">Support</p>
+              <a href="mailto:support@qrgenpro.com" style="color:#e5e7eb;">support@qrgenpro.com</a>
+            </div>
+          </li>
+          <li style="display:flex;align-items:flex-start;gap:0.5rem;">
+            <i data-lucide="phone" style="width:18px;height:18px;margin-top:2px;color:#c7d2fe;"></i>
+            <div>
+              <p style="font-weight:500;">Sales</p>
+              <a href="tel:+15551234567" style="color:#e5e7eb;">+1 (555) 123-4567</a>
+            </div>
+          </li>
+          <li style="display:flex;align-items:flex-start;gap:0.5rem;">
+            <i data-lucide="map-pin" style="width:18px;height:18px;margin-top:2px;color:#c7d2fe;"></i>
+            <div>
+              <p style="font-weight:500;">Office</p>
+              <p style="color:#e5e7eb;">123 Tech Street, San Francisco, CA 94105</p>
+            </div>
+          </li>
+        </ul>
+        <div style="margin-top:1.5rem;font-size:0.8rem;color:#e5e7eb;opacity:0.9;">
+          <p>For security or abuse reports, please include any relevant URLs, request IDs, and timestamps.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;">
+      <p style="font-size:0.8rem;color:var(--gray-400);">&copy; 2025 QR Generator Pro. All rights reserved.</p>
+      <!-- <div style="display:flex;gap:0.75rem;font-size:0.8rem;color:var(--gray-400);">
+        <a href="/" style="color:inherit;">Home</a>
+        <a href="/features.html" style="color:inherit;">Features</a>
+        <a href="/" onclick="event.preventDefault();goToAppView('pricing');" style="color:inherit;">Pricing</a>
+      </div> -->
+    </div>
+  </footer>
+
+  <script>
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+
+    // Configure your Supabase project details here
+    const SUPABASE_URL = "https://tqcaiytfzytdqxkodlvf.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxY2FpeXRmenl0ZHF4a29kbHZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyODY5NDEsImV4cCI6MjA3ODg2Mjk0MX0.TgN_hpEY2Ikmw9GQDX0EzgjwwDDEiNji8sYx4XD08Qs";
+
+    function goToAppView(view) {
+      try {
+        window.localStorage.setItem("currentView", view);
+      } catch (e) {}
+      window.location.href = "/";
+    }
+
+    function isProbablyLoggedIn() {
+      try {
+        if (!window.localStorage) return false;
+        for (var i = 0; i < window.localStorage.length; i++) {
+          var key = window.localStorage.key(i);
+          if (!key) continue;
+          if (key.indexOf("sb-") === 0 && key.indexOf("auth-token") !== -1) {
+            var val = window.localStorage.getItem(key);
+            if (val && val !== "null") return true;
+          }
+        }
+      } catch (e) {}
+      return false;
+    }
+
+    // Update header auth button based on login state
+    (function () {
+      var loggedIn = isProbablyLoggedIn();
+      var headerBtn = document.querySelector("header .btn.btn-outline");
+      if (!headerBtn) return;
+
+      if (loggedIn) {
+        headerBtn.textContent = "Home";
+        headerBtn.onclick = function () {
+          goToAppView("dashboard");
+        };
+      } else {
+        headerBtn.textContent = "Login";
+        headerBtn.onclick = function () {
+          goToAppView("login");
+        };
+      }
+    })();
+
+    const form = document.getElementById("contact-form");
+    const statusEl = document.getElementById("form-status");
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      const data = new FormData(form);
+
+      const name = (data.get("name") || "").toString();
+      const email = (data.get("email") || "").toString();
+      const topic = (data.get("topic") || "General").toString();
+      const message = (data.get("message") || "").toString();
+
+      if (!SUPABASE_URL || !SUPABASE_ANON_KEY ||
+          SUPABASE_URL.includes("YOUR-PROJECT-REF") ||
+          SUPABASE_ANON_KEY === "YOUR_ANON_PUBLIC_KEY") {
+        statusEl.textContent = "Contact form is not configured yet. Please try again later.";
+        statusEl.style.color = "#b91c1c"; // red-700
+        return;
+      }
+
+      statusEl.textContent = "Sending your message...";
+      statusEl.style.color = "#6b7280"; // gray-500
+
+      try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/contact_messages`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            topic,
+            message,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to submit form");
+        }
+
+        statusEl.textContent = "Thank you! Your message has been sent.";
+        statusEl.style.color = "#16a34a"; // green-600
+        form.reset();
+      } catch (error) {
+        console.error("Contact form submission failed", error);
+        statusEl.textContent = "Something went wrong while sending your message. Please try again.";
+        statusEl.style.color = "#b91c1c"; // red-700
+      }
+    });
+  </script>
+</body>
+</html>
