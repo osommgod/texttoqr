@@ -26,3 +26,6 @@ export const PAYMENT_TAGLINE =
 export const PCI_STATEMENT = "Payments secured by PCI-DSS compliant providers.";
 
 export type PaymentGateway = (typeof PAYMENT_GATEWAYS)[number];
+
+// Optional: country used in certain legal/policy copy (not wired yet)
+export const COMPANY_COUNTRY = "USA";
