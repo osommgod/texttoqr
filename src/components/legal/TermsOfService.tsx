@@ -92,7 +92,7 @@ export function TermsOfService() {
           <h2 className="font-semibold text-gray-900">12. Contact</h2>
           <p>
             If you have any questions about these Terms, please contact us at
-            <span className="font-medium"> support@qrgenpro.com</span>.
+            <span className="font-medium"> support@text2qr.online</span>.
           </p>
         </div>
       </section>

@@ -73,7 +73,7 @@ export function PrivacyPolicy() {
           <p>
             Depending on your location, you may have rights to access, rectify, delete, restrict, or object to the
             processing of your personal data, and to data portability. You can exercise these rights by contacting us
-            at support@qrgenpro.com.
+            at support@text2qr.online.
           </p>
 
           <h2 className="font-semibold text-gray-900">9. Cookies & Tracking</h2>
@@ -100,7 +100,7 @@ export function PrivacyPolicy() {
           <h2 className="font-semibold text-gray-900">12. Contact</h2>
           <p>
             For questions or requests related to this Privacy Policy, please contact us at
-            <span className="font-medium"> support@qrgenpro.com</span>.
+            <span className="font-medium"> support@text2qr.online</span>.
           </p>
         </div>
       </section>

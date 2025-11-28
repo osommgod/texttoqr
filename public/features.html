@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <link rel="icon" href="/favicon.png" />
   <meta charset="UTF-8" />
   <title>QR Generator Pro – Features</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -10,1025 +12,1221 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <style>
     :root {
-      --indigo-50:#eef2ff;
-      --indigo-100:#e0e7ff;
-      --indigo-400:#818cf8;
-      --indigo-600:#4f46e5;
-      --indigo-700:#4338ca;
-      --indigo-800:#3730a3;
-      --purple-600:#7c3aed;
-      --gray-50:#f9fafb;
-      --gray-100:#f3f4f6;
-      --gray-200:#e5e7eb;
-      --gray-300:#d1d5db;
-      --gray-400:#9ca3af;
-      --gray-500:#6b7280;
-      --gray-600:#4b5563;
-      --gray-700:#374151;
-      --gray-800:#1f2937;
-      --gray-900:#111827;
-      --green-500:#22c55e;
-      --white:#ffffff;
-      --black:#000000;
-      --radius-sm:0.375rem;
-      --radius-md:0.75rem;
-      --radius-lg:1rem;
-      --radius-xl:1.25rem;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--gray-900);
-      background:#fff;
-      line-height:1.5;
-    }
-    a{text-decoration:none;color:inherit}
-    img{max-width:100%;display:block}
-    .container{max-width:1120px;margin:0 auto;padding:0 1rem}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      border-radius:999px;border:1px solid transparent;
-      font-size:0.9rem;font-weight:600;
-      padding:0.8rem 1.4rem;cursor:pointer;
-      transition:.2s all ease;
-      white-space:nowrap;
-    }
-    .btn-primary{
-      background:var(--white);
-      color:var(--indigo-600);
-    }
-    .btn-primary:hover{background:#f3f4ff}
-    .btn-ghost{
-      background:transparent;border-color:rgba(255,255,255,.7);
-      color:var(--white);
-    }
-    .btn-ghost:hover{background:rgba(255,255,255,.1)}
-    .btn-solid{
-      background:var(--indigo-600);color:#fff;border-color:var(--indigo-600);
-    }
-    .btn-solid:hover{background:var(--indigo-700)}
-    .btn-outline{
-      background:#fff;border-color:var(--gray-300);color:var(--gray-800);
-    }
-    .btn-outline:hover{background:var(--gray-50)}
-    .badge{
-      display:inline-flex;align-items:center;justify-content:center;
-      border-radius:999px;border:1px solid rgba(255,255,255,.4);
-      padding:0.25rem 0.7rem;font-size:0.7rem;font-weight:500;
-    }
-    .badge-secondary{
-      border-radius:999px;
-      background:var(--gray-100);
-      font-size:0.75rem;
-      padding:0.35rem 0.8rem;
-      display:inline-flex;align-items:center;gap:0.35rem;
-    }
-    .card{
-      background:#fff;
-      border-radius:var(--radius-lg);
-      border:1px solid var(--gray-200);
-      box-shadow:0 1px 3px rgba(15,23,42,.06);
-      padding:1.5rem;
-    }
-    .input{
-      width:100%;padding:0.7rem 0.75rem;
-      border-radius:var(--radius-sm);
-      border:1px solid var(--gray-300);
-      font-size:0.95rem;
-      outline:none;
-      transition:border-color .15s, box-shadow .15s;
-    }
-    .input:focus{
-      border-color:var(--indigo-500);
-      box-shadow:0 0 0 1px rgba(79,70,229,.4);
-    }
-    h1{font-size:2.25rem;font-weight:700;margin-bottom:0.25rem}
-    h2{font-size:1.75rem;font-weight:700}
-    h3{font-size:1.1rem;font-weight:600}
-    p{font-size:0.95rem}
-    .text-center{text-align:center}
-    .mt-1{margin-top:0.25rem}
-    .mt-2{margin-top:0.5rem}
-    .mt-3{margin-top:0.75rem}
-    .mt-4{margin-top:1rem}
-    .mt-6{margin-top:1.5rem}
-    .mt-8{margin-top:2rem}
-    .mb-2{margin-bottom:0.5rem}
-    .mb-3{margin-bottom:0.75rem}
-    .mb-4{margin-bottom:1rem}
-    .mb-6{margin-bottom:1.5rem}
-    .mb-8{margin-bottom:2rem}
-    .section{
-      padding:4rem 0;
+      --indigo-50: #eef2ff;
+      --indigo-100: #e0e7ff;
+      --indigo-400: #818cf8;
+      --indigo-600: #4f46e5;
+      --indigo-700: #4338ca;
+      --indigo-800: #3730a3;
+      --purple-600: #7c3aed;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --green-500: #22c55e;
+      --white: #ffffff;
+      --black: #000000;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.75rem;
+      --radius-lg: 1rem;
+      --radius-xl: 1.25rem;
     }
 
-    .hero{
-      position:relative;
-      background:linear-gradient(135deg,var(--indigo-600),var(--purple-600),var(--indigo-800));
-      color:#fff;
-      overflow:hidden;
-    }
-    .hero-grid{
-      display:grid;
-      grid-template-columns:1.1fr 1fr;
-      gap:3rem;
-      align-items:center;
-    }
-    .hero-grid-single{grid-template-columns:1fr}
-    .hero-bg-grid{
-      position:absolute;inset:0;
-      background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
-                     linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
-      background-size:32px 32px;
-      opacity:.55;
-      pointer-events:none;
-    }
-    .hero-content{position:relative;z-index:1}
-    .hero-title{color:#fff;font-size:2.3rem}
-    .hero-sub{color:#e0e7ff;font-size:1.05rem;max-width:34rem}
-
-    .hero-trust{
-      display:flex;flex-wrap:wrap;gap:0.75rem;
-      font-size:0.85rem;color:#e0e7ff;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
     }
 
-    .grid-4{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:1.5rem;
-    }
-    .grid-3{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:1.75rem;
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--gray-900);
+      background: #fff;
+      line-height: 1.5;
     }
 
-    .feature-card{
-      text-align:center;
-      padding:1.5rem;
-      border-radius:var(--radius-lg);
-      border:1px solid var(--gray-200);
-      box-shadow:0 1px 3px rgba(15,23,42,.06);
-      transition:box-shadow .15s, transform .15s;
-    }
-    .feature-card:hover{
-      transform:translateY(-3px);
-      box-shadow:0 10px 25px rgba(15,23,42,.08);
-    }
-    .feature-icon{
-      width:3.5rem;height:3.5rem;
-      border-radius:999px;
-      display:flex;align-items:center;justify-content:center;
-      margin:0 auto 1rem;
+    a {
+      text-decoration: none;
+      color: inherit
     }
 
-    .step-badge{
-      width:4rem;height:4rem;
-      border-radius:999px;
-      display:flex;align-items:center;justify-content:center;
-      margin:0 auto 1.5rem;
-      color:#fff;font-size:1.3rem;font-weight:600;
+    img {
+      max-width: 100%;
+      display: block
     }
 
-    .dev-api-code{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      font-size:0.7rem;
-      background:rgba(0,0,0,.7);
-      border-radius:var(--radius-md);
-      padding:1rem;
-      overflow-x:auto;
-      color:#e5e7eb;
-    }
-    .dev-api-card{background:#111827;color:#e5e7eb;}
-
-    .pricing-grid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:1.75rem;
-    }
-    .pricing-card{
-      padding:2rem;
-      border-radius:var(--radius-lg);
-      border:1px solid var(--gray-200);
-      box-shadow:0 1px 3px rgba(15,23,42,.06);
-      background:#fff;
-      position:relative;
-      transition:box-shadow .15s, transform .15s;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-    }
-    .pricing-card:hover{
-      transform:translateY(-4px);
-      box-shadow:0 12px 30px rgba(15,23,42,.12);
-    }
-    .pricing-popular{
-      border-width:2px;
-      border-color:var(--indigo-600);
-    }
-    .pricing-badge{
-      position:absolute;
-      top:-0.9rem;
-      left:50%;
-      transform:translateX(-50%);
-      padding:0.25rem 0.75rem;
-      border-radius:999px;
-      background:var(--indigo-600);
-      color:#fff;
-      font-size:0.7rem;
-      font-weight:600;
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1rem
     }
 
-    .trust-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5rem}
-
-    .social-row{display:flex;justify-content:center;gap:1.2rem}
-    .social-pill{
-      background:#fff;border-radius:999px;
-      padding:0.9rem;
-      box-shadow:0 1px 3px rgba(15,23,42,.08);
-      transition:box-shadow .15s, transform .15s;
-    }
-    .social-pill:hover{
-      transform:translateY(-2px);
-      box-shadow:0 8px 20px rgba(15,23,42,.16);
-    }
-
-    .cta{
-      background:linear-gradient(90deg,var(--indigo-600),var(--purple-600));
-      color:#fff;
-      text-align:center;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.8rem 1.4rem;
+      cursor: pointer;
+      transition: .2s all ease;
+      white-space: nowrap;
     }
 
-    footer{
-      background:#111827;
-      color:var(--gray-300);
-      padding:3rem 0;
-      font-size:0.85rem;
+    .btn-primary {
+      background: var(--white);
+      color: var(--indigo-600);
     }
-    .footer-grid{
-      display:grid;
-      gap:2rem;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      margin-bottom:2rem;
-    }
-    .footer-links li{margin-bottom:0.35rem}
 
-    @media (max-width:1024px){
-      .hero-grid{grid-template-columns:1fr;gap:2.5rem}
-      .pricing-grid{grid-template-columns:1fr}
-      .trust-grid{grid-template-columns:1fr}
-      .grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .grid-3{grid-template-columns:1fr}
+    .btn-primary:hover {
+      background: #f3f4ff
     }
-    @media (max-width:640px){
-      h1{font-size:1.9rem}
-      .section{padding:3rem 0}
-      .hero-sub{font-size:0.95rem}
+
+    .btn-ghost {
+      background: transparent;
+      border-color: rgba(255, 255, 255, .7);
+      color: var(--white);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, .1)
+    }
+
+    .btn-solid {
+      background: var(--indigo-600);
+      color: #fff;
+      border-color: var(--indigo-600);
+    }
+
+    .btn-solid:hover {
+      background: var(--indigo-700)
+    }
+
+    .btn-outline {
+      background: #fff;
+      border-color: var(--gray-300);
+      color: var(--gray-800);
+    }
+
+    .btn-outline:hover {
+      background: var(--gray-50)
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .4);
+      padding: 0.25rem 0.7rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .badge-secondary {
+      border-radius: 999px;
+      background: var(--gray-100);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .06);
+      padding: 1.5rem;
+    }
+
+    .input {
+      width: 100%;
+      padding: 0.7rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--gray-300);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .input:focus {
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, .4);
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600
+    }
+
+    p {
+      font-size: 0.95rem
+    }
+
+    .text-center {
+      text-align: center
+    }
+
+    .mt-1 {
+      margin-top: 0.25rem
+    }
+
+    .mt-2 {
+      margin-top: 0.5rem
+    }
+
+    .mt-3 {
+      margin-top: 0.75rem
+    }
+
+    .mt-4 {
+      margin-top: 1rem
+    }
+
+    .mt-6 {
+      margin-top: 1.5rem
+    }
+
+    .mt-8 {
+      margin-top: 2rem
+    }
+
+    .mb-2 {
+      margin-bottom: 0.5rem
+    }
+
+    .mb-3 {
+      margin-bottom: 0.75rem
+    }
+
+    .mb-4 {
+      margin-bottom: 1rem
+    }
+
+    .mb-6 {
+      margin-bottom: 1.5rem
+    }
+
+    .mb-8 {
+      margin-bottom: 2rem
+    }
+
+    .section {
+      padding: 4rem 0;
+    }
+
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, var(--indigo-600), var(--purple-600), var(--indigo-800));
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .hero-grid-single {
+      grid-template-columns: 1fr
+    }
+
+    .hero-bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1
+    }
+
+    .hero-title {
+      color: #fff;
+      font-size: 2.3rem
+    }
+
+    .hero-sub {
+      color: #e0e7ff;
+      font-size: 1.05rem;
+      max-width: 34rem
+    }
+
+    .hero-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: #e0e7ff;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.75rem;
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .06);
+      transition: box-shadow .15s, transform .15s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
+    }
+
+    .feature-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    .step-badge {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .dev-api-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.7rem;
+      background: rgba(0, 0, 0, .7);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      overflow-x: auto;
+      color: #e5e7eb;
+    }
+
+    .dev-api-card {
+      background: #111827;
+      color: #e5e7eb;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.75rem;
+    }
+
+    .pricing-card {
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .06);
+      background: #fff;
+      position: relative;
+      transition: box-shadow .15s, transform .15s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .12);
+    }
+
+    .pricing-popular {
+      border-width: 2px;
+      border-color: var(--indigo-600);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -0.9rem;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: var(--indigo-600);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem
+    }
+
+    .social-row {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem
+    }
+
+    .social-pill {
+      background: #fff;
+      border-radius: 999px;
+      padding: 0.9rem;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, .08);
+      transition: box-shadow .15s, transform .15s;
+    }
+
+    .social-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .16);
+    }
+
+    .cta {
+      background: linear-gradient(90deg, var(--indigo-600), var(--purple-600));
+      color: #fff;
+      text-align: center;
+    }
+
+    footer {
+      background: #111827;
+      color: var(--gray-300);
+      padding: 3rem 0;
+      font-size: 0.85rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 2rem;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.35rem
+    }
+
+    @media (max-width:1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem
+      }
+
+      .pricing-grid {
+        grid-template-columns: 1fr
+      }
+
+      .trust-grid {
+        grid-template-columns: 1fr
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media (max-width:640px) {
+      h1 {
+        font-size: 1.9rem
+      }
+
+      .section {
+        padding: 3rem 0
+      }
+
+      .hero-sub {
+        font-size: 0.95rem
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div id="app">
-  <!-- HERO -->
-  <section class="hero section">
-    <div class="hero-bg-grid"></div>
-    <div class="container hero-content">
-      <div class="hero-grid">
-        <!-- Left -->
-        <div>
-          <span class="badge">Trusted by 50,000+ businesses worldwide</span>
-          <h1 class="hero-title mt-3">Transform Text to QR Code in Seconds</h1>
-          <p class="hero-sub mt-3">
-            Professional QR code generation with powerful API access. Generate unlimited QR codes for URLs, text,
-            contact cards, and more. Secure, fast, and reliable.
-          </p>
+  <div id="app">
+    <!-- HERO -->
+    <section class="hero section">
+      <div class="hero-bg-grid"></div>
+      <div class="container hero-content">
+        <div class="hero-grid">
+          <!-- Left -->
+          <div>
+            <span class="badge">Trusted by 50,000+ businesses worldwide</span>
+            <h1 class="hero-title mt-3">Transform Text to QR Code in Seconds</h1>
+            <p class="hero-sub mt-3">
+              Professional QR code generation with powerful API access. Generate unlimited QR codes for URLs, text,
+              contact cards, and more. Secure, fast, and reliable.
+            </p>
 
-          <div class="mt-4" style="display:flex;flex-wrap:wrap;gap:0.75rem;">
-            <button class="btn btn-primary" id="btn-get-started-hero">
-              Get Started Free
-              <span style="display:inline-flex;margin-left:0.3rem;">
-                <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
-              </span>
-            </button>
-            <button class="btn btn-ghost" id="btn-view-pricing-hero">View Pricing</button>
+            <div class="mt-4" style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+              <button class="btn btn-primary" id="btn-get-started-hero">
+                Get Started Free
+                <span style="display:inline-flex;margin-left:0.3rem;">
+                  <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+                </span>
+              </button>
+              <button class="btn btn-ghost" id="btn-view-pricing-hero">View Pricing</button>
+            </div>
+
+            <div class="hero-trust mt-4">
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <i data-lucide="check" style="width:18px;height:18px"></i>
+                <span>No credit card required</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <i data-lucide="check" style="width:18px;height:18px"></i>
+                <span>GDPR Compliant</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.4rem;">
+                <i data-lucide="check" style="width:18px;height:18px"></i>
+                <span>SSL Secured</span>
+              </div>
+            </div>
           </div>
 
-          <div class="hero-trust mt-4">
-            <div style="display:flex;align-items:center;gap:0.4rem;">
-              <i data-lucide="check" style="width:18px;height:18px"></i>
-              <span>No credit card required</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:0.4rem;">
-              <i data-lucide="check" style="width:18px;height:18px"></i>
-              <span>GDPR Compliant</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:0.4rem;">
-              <i data-lucide="check" style="width:18px;height:18px"></i>
-              <span>SSL Secured</span>
+          <!-- Right demo card -->
+          <div>
+            <div class="card" style="background:rgba(255,255,255,0.96);backdrop-filter:blur(10px);">
+              <h3 class="mb-3" style="color:var(--gray-900);">Try it now – Free Demo</h3>
+              <div class="mb-3">
+                <input id="demo-input" class="input" placeholder="Enter text or URL to generate QR code..." />
+              </div>
+              <div id="demo-output">
+                <div
+                  style="display:flex;align-items:center;justify-content:center;height:200px;background:var(--gray-50);border-radius:var(--radius-md);border:2px dashed var(--gray-300);">
+                  <div style="text-align:center;color:var(--gray-400);">
+                    <i data-lucide="qr-code" style="width:48px;height:48px;margin:0 auto 0.5rem;"></i>
+                    <p>QR code will appear here</p>
+                  </div>
+                </div>
+              </div>
+              <canvas id="demo-canvas" style="display:none"></canvas>
+              <p id="demo-helper" class="mt-3" style="font-size:0.85rem;color:var(--gray-600);display:none;">
+                ✨ Your QR code is ready! Sign up to download and track analytics.
+              </p>
             </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Right demo card -->
-        <div>
-          <div class="card" style="background:rgba(255,255,255,0.96);backdrop-filter:blur(10px);">
-            <h3 class="mb-3" style="color:var(--gray-900);">Try it now – Free Demo</h3>
-            <div class="mb-3">
-              <input id="demo-input" class="input" placeholder="Enter text or URL to generate QR code..." />
+    <!-- FEATURES -->
+    <section class="section" style="background:var(--gray-50);">
+      <div class="container">
+        <div class="text-center mb-8">
+          <h2>Why Choose QR Generator Pro?</h2>
+          <p class="mt-2" style="color:var(--gray-600);max-width:720px;margin:0 auto;">
+            Enterprise-grade QR code generation with advanced features and reliable API access.
+          </p>
+        </div>
+
+        <div class="grid-4" style="max-width:960px;margin:0 auto;">
+          <div class="feature-card">
+            <div class="feature-icon" style="background:var(--indigo-100);">
+              <i data-lucide="zap" style="width:24px;height:24px;color:var(--indigo-600);"></i>
             </div>
-            <div id="demo-output">
-              <div style="display:flex;align-items:center;justify-content:center;height:200px;background:var(--gray-50);border-radius:var(--radius-md);border:2px dashed var(--gray-300);">
-                <div style="text-align:center;color:var(--gray-400);">
-                  <i data-lucide="qr-code" style="width:48px;height:48px;margin:0 auto 0.5rem;"></i>
-                  <p>QR code will appear here</p>
-                </div>
-              </div>
+            <h3 class="mb-1">Lightning Fast</h3>
+            <p style="color:var(--gray-600);">
+              Generate QR codes instantly with our optimized API. Average response time under 100ms.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon" style="background:#f3e8ff;">
+              <i data-lucide="shield" style="width:24px;height:24px;color:var(--purple-600);"></i>
             </div>
-            <canvas id="demo-canvas" style="display:none"></canvas>
-            <p id="demo-helper" class="mt-3" style="font-size:0.85rem;color:var(--gray-600);display:none;">
-              ✨ Your QR code is ready! Sign up to download and track analytics.
+            <h3 class="mb-1">Secure &amp; Private</h3>
+            <p style="color:var(--gray-600);">
+              Bank-level encryption. Your data is never stored or shared. GDPR compliant.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon" style="background:#dcfce7;">
+              <i data-lucide="code" style="width:24px;height:24px;color:#16a34a;"></i>
+            </div>
+            <h3 class="mb-1">Developer API</h3>
+            <p style="color:var(--gray-600);">
+              RESTful API with comprehensive documentation. Integrate in minutes.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon" style="background:#ffedd5;">
+              <i data-lucide="globe" style="width:24px;height:24px;color:#ea580c;"></i>
+            </div>
+            <h3 class="mb-1">99.9% Uptime</h3>
+            <p style="color:var(--gray-600);">
+              Enterprise infrastructure with global CDN. Always available when you need it.
             </p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FEATURES -->
-  <section class="section" style="background:var(--gray-50);">
-    <div class="container">
-      <div class="text-center mb-8">
-        <h2>Why Choose QR Generator Pro?</h2>
-        <p class="mt-2" style="color:var(--gray-600);max-width:720px;margin:0 auto;">
-          Enterprise-grade QR code generation with advanced features and reliable API access.
-        </p>
-      </div>
+    <!-- HOW IT WORKS + DEV API -->
+    <section class="section">
+      <div class="container">
+        <div class="text-center mb-8">
+          <h2>How It Works</h2>
+          <p class="mt-2" style="color:var(--gray-600);max-width:720px;margin:0 auto;">
+            Three simple steps to generate professional QR codes.
+          </p>
+        </div>
 
-      <div class="grid-4" style="max-width:960px;margin:0 auto;">
-        <div class="feature-card">
-          <div class="feature-icon" style="background:var(--indigo-100);">
-            <i data-lucide="zap" style="width:24px;height:24px;color:var(--indigo-600);"></i>
+        <div class="grid-3" style="max-width:880px;margin:0 auto;">
+          <div class="text-center">
+            <div class="step-badge" style="background:var(--indigo-600);">1</div>
+            <h3 class="mb-1">Enter Your Content</h3>
+            <p style="color:var(--gray-600);">
+              Input any text, URL, contact information, or data you want to encode.
+            </p>
           </div>
-          <h3 class="mb-1">Lightning Fast</h3>
-          <p style="color:var(--gray-600);">
-            Generate QR codes instantly with our optimized API. Average response time under 100ms.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon" style="background:#f3e8ff;">
-            <i data-lucide="shield" style="width:24px;height:24px;color:var(--purple-600);"></i>
+          <div class="text-center">
+            <div class="step-badge" style="background:var(--purple-600);">2</div>
+            <h3 class="mb-1">Generate QR Code</h3>
+            <p style="color:var(--gray-600);">
+              Our system instantly creates a high-quality, scannable QR code.
+            </p>
           </div>
-          <h3 class="mb-1">Secure &amp; Private</h3>
-          <p style="color:var(--gray-600);">
-            Bank-level encryption. Your data is never stored or shared. GDPR compliant.
-          </p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon" style="background:#dcfce7;">
-            <i data-lucide="code" style="width:24px;height:24px;color:#16a34a;"></i>
+          <div class="text-center">
+            <div class="step-badge" style="background:var(--indigo-600);">3</div>
+            <h3 class="mb-1">Download &amp; Use</h3>
+            <p style="color:var(--gray-600);">
+              Download in multiple formats and track scans with built-in analytics.
+            </p>
           </div>
-          <h3 class="mb-1">Developer API</h3>
-          <p style="color:var(--gray-600);">
-            RESTful API with comprehensive documentation. Integrate in minutes.
-          </p>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-icon" style="background:#ffedd5;">
-            <i data-lucide="globe" style="width:24px;height:24px;color:#ea580c;"></i>
-          </div>
-          <h3 class="mb-1">99.9% Uptime</h3>
-          <p style="color:var(--gray-600);">
-            Enterprise infrastructure with global CDN. Always available when you need it.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS + DEV API -->
-  <section class="section">
-    <div class="container">
-      <div class="text-center mb-8">
-        <h2>How It Works</h2>
-        <p class="mt-2" style="color:var(--gray-600);max-width:720px;margin:0 auto;">
-          Three simple steps to generate professional QR codes.
-        </p>
-      </div>
-
-      <div class="grid-3" style="max-width:880px;margin:0 auto;">
-        <div class="text-center">
-          <div class="step-badge" style="background:var(--indigo-600);">1</div>
-          <h3 class="mb-1">Enter Your Content</h3>
-          <p style="color:var(--gray-600);">
-            Input any text, URL, contact information, or data you want to encode.
-          </p>
-        </div>
-        <div class="text-center">
-          <div class="step-badge" style="background:var(--purple-600);">2</div>
-          <h3 class="mb-1">Generate QR Code</h3>
-          <p style="color:var(--gray-600);">
-            Our system instantly creates a high-quality, scannable QR code.
-          </p>
-        </div>
-        <div class="text-center">
-          <div class="step-badge" style="background:var(--indigo-600);">3</div>
-          <h3 class="mb-1">Download &amp; Use</h3>
-          <p style="color:var(--gray-600);">
-            Download in multiple formats and track scans with built-in analytics.
-          </p>
-        </div>
-      </div>
-
-      <!-- Developer API -->
-      <div class="mt-8" style="max-width:840px;margin:0 auto;">
-        <div class="card dev-api-card">
-          <div style="display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;">
-            <div style="flex:1 1 220px;min-width:0;">
-              <div style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#a5b4fc;text-transform:uppercase;letter-spacing:.18em;margin-bottom:0.25rem;">
-                <span>Developer API Access</span>
+        <!-- Developer API -->
+        <div class="mt-8" style="max-width:840px;margin:0 auto;">
+          <div class="card dev-api-card">
+            <div style="display:flex;gap:1.5rem;align-items:flex-start;flex-wrap:wrap;">
+              <div style="flex:1 1 220px;min-width:0;">
+                <div
+                  style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.75rem;color:#a5b4fc;text-transform:uppercase;letter-spacing:.18em;margin-bottom:0.25rem;">
+                  <span>Developer API Access</span>
+                </div>
+                <h3 class="mb-2" style="color:#e5e7eb;">Integrate QR generation in a few lines of code</h3>
+                <p style="color:#9ca3af;font-size:0.9rem;">
+                  Integrate QR code generation directly into your applications with our RESTful API.
+                </p>
+                <div class="mt-3" style="display:flex;flex-wrap:wrap;gap:0.4rem;font-size:0.8rem;color:#9ca3af;">
+                  <span style="display:inline-flex;align-items:center;gap:0.25rem;">
+                    <i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i>
+                    Language-agnostic REST
+                  </span>
+                  <span style="display:inline-flex;align-items:center;gap:0.25rem;">
+                    <i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i>
+                    API keys &amp; rate limits
+                  </span>
+                </div>
+                <button class="btn btn-outline mt-4" id="btn-view-api-docs" style="border-color:#e5e7eb;color:#e5e7eb;">
+                  View API Documentation
+                </button>
               </div>
-              <h3 class="mb-2" style="color:#e5e7eb;">Integrate QR generation in a few lines of code</h3>
-              <p style="color:#9ca3af;font-size:0.9rem;">
-                Integrate QR code generation directly into your applications with our RESTful API.
-              </p>
-              <div class="mt-3" style="display:flex;flex-wrap:wrap;gap:0.4rem;font-size:0.8rem;color:#9ca3af;">
-                <span style="display:inline-flex;align-items:center;gap:0.25rem;">
-                  <i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i>
-                  Language-agnostic REST
-                </span>
-                <span style="display:inline-flex;align-items:center;gap:0.25rem;">
-                  <i data-lucide="check" style="width:14px;height:14px;color:#22c55e;"></i>
-                  API keys &amp; rate limits
-                </span>
-              </div>
-              <button class="btn btn-outline mt-4" id="btn-view-api-docs" style="border-color:#e5e7eb;color:#e5e7eb;">
-                View API Documentation
-              </button>
-            </div>
 
-            <div style="flex:1 1 260px;min-width:0;">
-              <div class="dev-api-code">
-                <div style="color:#4ade80;margin-bottom:0.35rem;">curl example</div>
-<pre>curl -X POST https://api.qrgenpro.com/v1/generate \
+              <div style="flex:1 1 260px;min-width:0;">
+                <div class="dev-api-code">
+                  <div style="color:#4ade80;margin-bottom:0.35rem;">curl example</div>
+                  <pre>curl -X POST https://tqcaiytfzytdqxkodlvf.supabase.co/functions/v1/generate-qr \
   -H "Authorization: Bearer ***" \
   -H "X-Key-Authorization: Bearer ***" \
   -H "X-Api-Key: api_key***" \
   -H "Content-Type: application/json" \
   -d '{"text": "https://example.com"}'</pre>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
+    </section>
 
-    </div>
-  </section>
+    <!-- PRICING -->
+    <section class="section" id="pricing" style="background:var(--gray-50);">
+      <div class="container">
+        <div class="text-center mb-8">
+          <h2>Simple, Transparent Pricing</h2>
+          <p class="mt-2" style="color:var(--gray-600);max-width:720px;margin:0 auto;">
+            Choose the plan that fits your needs. All plans include our core features.
+          </p>
+        </div>
 
-  <!-- PRICING -->
-  <section class="section" id="pricing" style="background:var(--gray-50);">
-    <div class="container">
-      <div class="text-center mb-8">
-        <h2>Simple, Transparent Pricing</h2>
-        <p class="mt-2" style="color:var(--gray-600);max-width:720px;margin:0 auto;">
-          Choose the plan that fits your needs. All plans include our core features.
+        <div class="pricing-grid" style="max-width:960px;margin:0 auto;">
+          <!-- Starter -->
+          <div class="pricing-card">
+            <h3 class="mb-1">Starter</h3>
+            <div class="mb-4">
+              <span id="price-starter" style="font-size:1.5rem;font-weight:600;">$9</span>
+              <span style="color:var(--gray-500);margin-left:0.2rem;">/month</span>
+            </div>
+            <ul id="features-starter" style="list-style:none;margin:0 0 1.5rem 0;padding:0;">
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>100 QR codes/month</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>PNG downloads</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>Basic analytics</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>Email support</span>
+              </li>
+            </ul>
+            <button class="btn btn-solid" id="btn-subscribe-starter">Subscribe Now</button>
+          </div>
+
+          <!-- Professional -->
+          <div class="pricing-card pricing-popular">
+            <div class="pricing-badge">Most Popular</div>
+            <h3 class="mb-1">Professional</h3>
+            <div class="mb-4">
+              <span id="price-pro" style="font-size:1.5rem;font-weight:600;">$29</span>
+              <span style="color:var(--gray-500);margin-left:0.2rem;">/month</span>
+            </div>
+            <ul id="features-pro" style="list-style:none;margin:0 0 1.5rem 0;padding:0;">
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>500 QR codes/month</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>PNG &amp; SVG downloads</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>Advanced analytics</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>API access (5,000 calls/mo)</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>Priority support</span>
+              </li>
+            </ul>
+            <button class="btn btn-solid" onclick="scrollToPricing()">Subscribe Now</button>
+          </div>
+
+          <!-- Business -->
+          <div class="pricing-card">
+            <h3 class="mb-1">Business</h3>
+            <div class="mb-4">
+              <span id="price-business" style="font-size:1.5rem;font-weight:600;">$79</span>
+              <span style="color:var(--gray-500);margin-left:0.2rem;">/month</span>
+            </div>
+            <ul id="features-business" style="list-style:none;margin:0 0 1.5rem 0;padding:0;">
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>2,000 QR codes/month</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>All formats</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>Full analytics dashboard</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>Unlimited API calls</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>24/7 dedicated support</span>
+              </li>
+              <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
+                <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
+                <span>Custom branding</span>
+              </li>
+            </ul>
+            <button class="btn btn-solid" onclick="scrollToPricing()">Subscribe Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST & SECURITY -->
+    <section class="section">
+      <div class="container">
+        <div class="text-center mb-8">
+          <h2>Trusted &amp; Secure</h2>
+          <p class="mt-2" style="color:var(--gray-600);max-width:720px;margin:0 auto;">
+            Your security and privacy are our top priorities.
+          </p>
+        </div>
+
+        <div class="card" style="max-width:960px;margin:0 auto 2rem;">
+          <h3 class="text-center mb-4" style="color:var(--gray-900);">Secure Payment Methods</h3>
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1.75rem;">
+            <div class="text-center">
+              <div style="background:#eff6ff;padding:1rem;border-radius:var(--radius-md);margin-bottom:0.4rem;">
+                <span style="font-weight:700;color:#2563eb;">PayPal</span>
+              </div>
+              <p style="font-size:0.75rem;color:var(--gray-600);">PayPal</p>
+            </div>
+            <div class="text-center">
+              <div style="background:#f5f3ff;padding:1rem;border-radius:var(--radius-md);margin-bottom:0.4rem;">
+                <span style="font-weight:700;color:#4f46e5;">Stripe</span>
+              </div>
+              <p style="font-size:0.75rem;color:var(--gray-600);">Stripe</p>
+            </div>
+            <div class="text-center">
+              <div style="background:#eff6ff;padding:1rem;border-radius:var(--radius-md);margin-bottom:0.4rem;">
+                <span style="font-weight:700;color:#1d4ed8;">Razorpay</span>
+              </div>
+              <p style="font-size:0.75rem;color:var(--gray-600);">Razorpay</p>
+            </div>
+            <div class="text-center">
+              <div style="background:#ecfdf3;padding:1rem;border-radius:var(--radius-md);margin-bottom:0.4rem;">
+                <span style="font-weight:700;color:#15803d;">PayU</span>
+              </div>
+              <p style="font-size:0.75rem;color:var(--gray-600);">PayU</p>
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            <span class="badge-secondary">
+              <i data-lucide="lock" style="width:16px;height:16px;color:var(--indigo-600);"></i>
+              256-bit SSL Encryption
+            </span>
+          </div>
+        </div>
+
+        <div class="trust-grid" style="max-width:960px;margin:0 auto;">
+          <div class="card text-center">
+            <i data-lucide="lock" style="width:40px;height:40px;color:var(--indigo-600);margin:0 auto 0.75rem;"></i>
+            <h3 class="mb-1">GDPR Compliant</h3>
+            <p style="font-size:0.85rem;color:var(--gray-600);">
+              Full compliance with EU data protection regulations.
+            </p>
+          </div>
+          <div class="card text-center">
+            <i data-lucide="shield" style="width:40px;height:40px;color:#16a34a;margin:0 auto 0.75rem;"></i>
+            <h3 class="mb-1">PCI DSS Certified</h3>
+            <p style="font-size:0.85rem;color:var(--gray-600);">
+              Payment card industry data security standards certified.
+            </p>
+          </div>
+          <div class="card text-center">
+            <i data-lucide="users" style="width:40px;height:40px;color:var(--purple-600);margin:0 auto 0.75rem;"></i>
+            <h3 class="mb-1">50,000+ Users</h3>
+            <p style="font-size:0.85rem;color:var(--gray-600);">
+              Trusted by businesses and individuals worldwide.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOCIAL PROOF -->
+    <section class="section" style="background:var(--gray-50);">
+      <div class="container">
+        <div style="max-width:640px;margin:0 auto;text-align:center;">
+          <h2 class="mb-4">Join Our Community</h2>
+          <div class="social-row mb-6">
+            <!-- Social icons (same as your original HTML) -->
+            <!-- ... (omitted for brevity, can copy exact SVGs from your snippet) -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta">
+      <div class="container">
+        <h2 class="mb-2">Ready to Get Started?</h2>
+        <p class="mt-1 mb-4" style="color:#c7d2fe;max-width:480px;margin:0 auto;">
+          Join thousands of satisfied users. Start generating QR codes today with our free plan.
         </p>
-      </div>
-
-      <div class="pricing-grid" style="max-width:960px;margin:0 auto;">
-        <!-- Starter -->
-        <div class="pricing-card">
-          <h3 class="mb-1">Starter</h3>
-          <div class="mb-4">
-            <span id="price-starter" style="font-size:1.5rem;font-weight:600;">$9</span>
-            <span style="color:var(--gray-500);margin-left:0.2rem;">/month</span>
-          </div>
-          <ul id="features-starter" style="list-style:none;margin:0 0 1.5rem 0;padding:0;">
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>100 QR codes/month</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>PNG downloads</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>Basic analytics</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>Email support</span>
-            </li>
-          </ul>
-          <button class="btn btn-solid" id="btn-subscribe-starter">Subscribe Now</button>
-        </div>
-
-        <!-- Professional -->
-        <div class="pricing-card pricing-popular">
-          <div class="pricing-badge">Most Popular</div>
-          <h3 class="mb-1">Professional</h3>
-          <div class="mb-4">
-            <span id="price-pro" style="font-size:1.5rem;font-weight:600;">$29</span>
-            <span style="color:var(--gray-500);margin-left:0.2rem;">/month</span>
-          </div>
-          <ul id="features-pro" style="list-style:none;margin:0 0 1.5rem 0;padding:0;">
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>500 QR codes/month</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>PNG &amp; SVG downloads</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>Advanced analytics</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>API access (5,000 calls/mo)</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>Priority support</span>
-            </li>
-          </ul>
-          <button class="btn btn-solid" onclick="scrollToPricing()">Subscribe Now</button>
-        </div>
-
-        <!-- Business -->
-        <div class="pricing-card">
-          <h3 class="mb-1">Business</h3>
-          <div class="mb-4">
-            <span id="price-business" style="font-size:1.5rem;font-weight:600;">$79</span>
-            <span style="color:var(--gray-500);margin-left:0.2rem;">/month</span>
-          </div>
-          <ul id="features-business" style="list-style:none;margin:0 0 1.5rem 0;padding:0;">
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>2,000 QR codes/month</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>All formats</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>Full analytics dashboard</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>Unlimited API calls</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>24/7 dedicated support</span>
-            </li>
-            <li class="mt-1" style="display:flex;gap:0.4rem;color:var(--gray-600);">
-              <i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>
-              <span>Custom branding</span>
-            </li>
-          </ul>
-          <button class="btn btn-solid" onclick="scrollToPricing()">Subscribe Now</button>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.75rem;">
+          <button class="btn btn-primary" id="btn-get-started-cta">
+            Start Free Trial
+            <span style="display:inline-flex;margin-left:0.3rem;">
+              <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
+            </span>
+          </button>
+          <button class="btn btn-ghost" id="btn-contact-sales">Contact Sales</button>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- TRUST & SECURITY -->
-  <section class="section">
-    <div class="container">
-      <div class="text-center mb-8">
-        <h2>Trusted &amp; Secure</h2>
-        <p class="mt-2" style="color:var(--gray-600);max-width:720px;margin:0 auto;">
-          Your security and privacy are our top priorities.
-        </p>
-      </div>
-
-      <div class="card" style="max-width:960px;margin:0 auto 2rem;">
-        <h3 class="text-center mb-4" style="color:var(--gray-900);">Secure Payment Methods</h3>
-        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1.75rem;">
-          <div class="text-center">
-            <div style="background:#eff6ff;padding:1rem;border-radius:var(--radius-md);margin-bottom:0.4rem;">
-              <span style="font-weight:700;color:#2563eb;">PayPal</span>
+    <!-- FOOTER -->
+    <footer>
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+              <i data-lucide="qr-code" style="width:28px;height:28px;color:#818cf8;"></i>
+              <span style="color:#fff;font-size:1.05rem;">QR Generator Pro</span>
             </div>
-            <p style="font-size:0.75rem;color:var(--gray-600);">PayPal</p>
+            <p style="color:var(--gray-400);margin-bottom:0.75rem;">
+              Professional QR code generation service trusted by businesses worldwide.
+            </p>
           </div>
-          <div class="text-center">
-            <div style="background:#f5f3ff;padding:1rem;border-radius:var(--radius-md);margin-bottom:0.4rem;">
-              <span style="font-weight:700;color:#4f46e5;">Stripe</span>
-            </div>
-            <p style="font-size:0.75rem;color:var(--gray-600);">Stripe</p>
+
+          <div>
+            <h4 style="color:#fff;margin-bottom:0.6rem;font-size:0.95rem;">Product</h4>
+            <ul class="footer-links">
+              <li><a href="#" class="hover" id="footer-link-features">Features</a></li>
+              <li><a href="#pricing" class="hover" id="footer-link-pricing">Pricing</a></li>
+              <li><a href="#" class="hover" id="footer-link-api">API Documentation</a></li>
+              <li><a href="#" class="hover" id="footer-link-how-it-works">How It Works</a></li>
+            </ul>
           </div>
-          <div class="text-center">
-            <div style="background:#eff6ff;padding:1rem;border-radius:var(--radius-md);margin-bottom:0.4rem;">
-              <span style="font-weight:700;color:#1d4ed8;">Razorpay</span>
-            </div>
-            <p style="font-size:0.75rem;color:var(--gray-600);">Razorpay</p>
+
+          <div>
+            <h4 style="color:#fff;margin-bottom:0.6rem;font-size:0.95rem;">Legal</h4>
+            <ul class="footer-links">
+              <li><a href="/legal/privacy.html">Privacy Policy</a></li>
+              <li><a href="/legal/terms.html">Terms of Service</a></li>
+              <li><a href="/legal/refund.html">Refund Policy</a></li>
+              <li><a href="/legal/gdpr.html">GDPR Compliance</a></li>
+            </ul>
           </div>
-          <div class="text-center">
-            <div style="background:#ecfdf3;padding:1rem;border-radius:var(--radius-md);margin-bottom:0.4rem;">
-              <span style="font-weight:700;color:#15803d;">PayU</span>
-            </div>
-            <p style="font-size:0.75rem;color:var(--gray-600);">PayU</p>
+
+          <div>
+            <h4 style="color:#fff;margin-bottom:0.6rem;font-size:0.95rem;">Contact Us</h4>
+            <ul class="footer-links" style="list-style:none;padding:0;">
+              <li style="display:flex;gap:0.4rem;margin-bottom:0.4rem;">
+                <i data-lucide="mail" style="width:16px;height:16px;margin-top:2px;"></i>
+                <span>support@text2qr.online</span>
+              </li>
+              <li style="display:flex;gap:0.4rem;margin-bottom:0.4rem;">
+                <i data-lucide="phone" style="width:16px;height:16px;margin-top:2px;"></i>
+                <span>+91 9876543210</span>
+              </li>
+              <li style="display:flex;gap:0.4rem;">
+                <i data-lucide="map-pin" style="width:16px;height:16px;margin-top:2px;"></i>
+                <span>32 Kalpana Square, Bhubaneswar, Odisha 751007</span>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="text-center mt-4">
-          <span class="badge-secondary">
-            <i data-lucide="lock" style="width:16px;height:16px;color:var(--indigo-600);"></i>
-            256-bit SSL Encryption
-          </span>
+
+        <div style="border-top:1px solid #1f2937;padding-top:1rem;text-align:center;color:var(--gray-500);">
+          &copy; 2025 QR Generator Pro. All rights reserved. | Payments secured by Stripe, PayPal, Razorpay &amp; PayU
         </div>
       </div>
+    </footer>
+  </div>
 
-      <div class="trust-grid" style="max-width:960px;margin:0 auto;">
-        <div class="card text-center">
-          <i data-lucide="lock" style="width:40px;height:40px;color:var(--indigo-600);margin:0 auto 0.75rem;"></i>
-          <h3 class="mb-1">GDPR Compliant</h3>
-          <p style="font-size:0.85rem;color:var(--gray-600);">
-            Full compliance with EU data protection regulations.
-          </p>
-        </div>
-        <div class="card text-center">
-          <i data-lucide="shield" style="width:40px;height:40px;color:#16a34a;margin:0 auto 0.75rem;"></i>
-          <h3 class="mb-1">PCI DSS Certified</h3>
-          <p style="font-size:0.85rem;color:var(--gray-600);">
-            Payment card industry data security standards certified.
-          </p>
-        </div>
-        <div class="card text-center">
-          <i data-lucide="users" style="width:40px;height:40px;color:var(--purple-600);margin:0 auto 0.75rem;"></i>
-          <h3 class="mb-1">50,000+ Users</h3>
-          <p style="font-size:0.85rem;color:var(--gray-600);">
-            Trusted by businesses and individuals worldwide.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <script>
+    window.addEventListener("load", function () {
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
 
-  <!-- SOCIAL PROOF -->
-  <section class="section" style="background:var(--gray-50);">
-    <div class="container">
-      <div style="max-width:640px;margin:0 auto;text-align:center;">
-        <h2 class="mb-4">Join Our Community</h2>
-        <div class="social-row mb-6">
-          <!-- Social icons (same as your original HTML) -->
-          <!-- ... (omitted for brevity, can copy exact SVGs from your snippet) -->
-        </div>
-      </div>
-    </div>
-  </section>
+      // Load dynamic pricing from Supabase Edge Function
+      fetch("https://tqcaiytfzytdqxkodlvf.functions.supabase.co/pricing")
+        .then(function (res) {
+          if (!res.ok) throw new Error("Bad response");
+          return res.json();
+        })
+        .then(function (plans) {
+          if (!Array.isArray(plans)) return;
 
-  <!-- CTA -->
-  <section class="section cta">
-    <div class="container">
-      <h2 class="mb-2">Ready to Get Started?</h2>
-      <p class="mt-1 mb-4" style="color:#c7d2fe;max-width:480px;margin:0 auto;">
-        Join thousands of satisfied users. Start generating QR codes today with our free plan.
-      </p>
-      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.75rem;">
-        <button class="btn btn-primary" id="btn-get-started-cta">
-          Start Free Trial
-          <span style="display:inline-flex;margin-left:0.3rem;">
-            <i data-lucide="arrow-right" style="width:16px;height:16px"></i>
-          </span>
-        </button>
-        <button class="btn btn-ghost" id="btn-contact-sales">Contact Sales</button>
-      </div>
-    </div>
-  </section>
+          var priceMap = {
+            starter: document.getElementById("price-starter"),
+            pro: document.getElementById("price-pro"),
+            business: document.getElementById("price-business"),
+          };
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
-            <i data-lucide="qr-code" style="width:28px;height:28px;color:#818cf8;"></i>
-            <span style="color:#fff;font-size:1.05rem;">QR Generator Pro</span>
-          </div>
-          <p style="color:var(--gray-400);margin-bottom:0.75rem;">
-            Professional QR code generation service trusted by businesses worldwide.
-          </p>
-        </div>
+          var featuresMap = {
+            starter: document.getElementById("features-starter"),
+            pro: document.getElementById("features-pro"),
+            business: document.getElementById("features-business"),
+          };
 
-        <div>
-          <h4 style="color:#fff;margin-bottom:0.6rem;font-size:0.95rem;">Product</h4>
-          <ul class="footer-links">
-            <li><a href="#" class="hover" id="footer-link-features">Features</a></li>
-            <li><a href="#pricing" class="hover" id="footer-link-pricing">Pricing</a></li>
-            <li><a href="#" class="hover" id="footer-link-api">API Documentation</a></li>
-            <li><a href="#" class="hover" id="footer-link-how-it-works">How It Works</a></li>
-          </ul>
-        </div>
+          plans.forEach(function (plan) {
+            if (!plan || !plan.id) return;
 
-        <div>
-          <h4 style="color:#fff;margin-bottom:0.6rem;font-size:0.95rem;">Legal</h4>
-          <ul class="footer-links">
-            <li><a href="/legal/privacy.html">Privacy Policy</a></li>
-            <li><a href="/legal/terms.html">Terms of Service</a></li>
-            <li><a href="/legal/refund.html">Refund Policy</a></li>
-            <li><a href="/legal/gdpr.html">GDPR Compliance</a></li>
-          </ul>
-        </div>
+            // Map API ids to card keys: ignore free, map "professional" -> "pro"
+            var key;
+            if (plan.id === "starter") key = "starter";
+            else if (plan.id === "professional") key = "pro";
+            else if (plan.id === "business") key = "business";
+            else return; // ignore other plans like "free"
 
-        <div>
-          <h4 style="color:#fff;margin-bottom:0.6rem;font-size:0.95rem;">Contact Us</h4>
-          <ul class="footer-links" style="list-style:none;padding:0;">
-            <li style="display:flex;gap:0.4rem;margin-bottom:0.4rem;">
-              <i data-lucide="mail" style="width:16px;height:16px;margin-top:2px;"></i>
-              <span>support@qrgenpro.com</span>
-            </li>
-            <li style="display:flex;gap:0.4rem;margin-bottom:0.4rem;">
-              <i data-lucide="phone" style="width:16px;height:16px;margin-top:2px;"></i>
-              <span>+1 (555) 123-4567</span>
-            </li>
-            <li style="display:flex;gap:0.4rem;">
-              <i data-lucide="map-pin" style="width:16px;height:16px;margin-top:2px;"></i>
-              <span>123 Tech Street, San Francisco, CA 94105</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div style="border-top:1px solid #1f2937;padding-top:1rem;text-align:center;color:var(--gray-500);">
-        &copy; 2025 QR Generator Pro. All rights reserved. | Payments secured by Stripe, PayPal, Razorpay &amp; PayU
-      </div>
-    </div>
-  </footer>
-</div>
-
-<script>
-  window.addEventListener("load", function () {
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
-
-    // Load dynamic pricing from Supabase Edge Function
-    fetch("https://tqcaiytfzytdqxkodlvf.functions.supabase.co/pricing")
-      .then(function (res) {
-        if (!res.ok) throw new Error("Bad response");
-        return res.json();
-      })
-      .then(function (plans) {
-        if (!Array.isArray(plans)) return;
-
-        var priceMap = {
-          starter: document.getElementById("price-starter"),
-          pro: document.getElementById("price-pro"),
-          business: document.getElementById("price-business"),
-        };
-
-        var featuresMap = {
-          starter: document.getElementById("features-starter"),
-          pro: document.getElementById("features-pro"),
-          business: document.getElementById("features-business"),
-        };
-
-        plans.forEach(function (plan) {
-          if (!plan || !plan.id) return;
-
-          // Map API ids to card keys: ignore free, map "professional" -> "pro"
-          var key;
-          if (plan.id === "starter") key = "starter";
-          else if (plan.id === "professional") key = "pro";
-          else if (plan.id === "business") key = "business";
-          else return; // ignore other plans like "free"
-
-          var priceEl = priceMap[key];
-          if (priceEl && typeof plan.price_monthly_cents === "number") {
-            var dollars = (plan.price_monthly_cents / 100).toFixed(0);
-            priceEl.textContent = "$" + dollars;
-          }
-
-          var listEl = featuresMap[key];
-          if (listEl && Array.isArray(plan.features)) {
-            // Clear existing list items
-            listEl.innerHTML = "";
-
-            var items = plan.features;
-
-            // Optionally prepend monthly conversions as first bullet if provided
-            if (typeof plan.monthly_conversions === "number" && plan.monthly_conversions > 0) {
-              var conversionsText =
-                plan.monthly_conversions.toLocaleString() + " QR codes/month";
-              items = [conversionsText].concat(items);
+            var priceEl = priceMap[key];
+            if (priceEl && typeof plan.price_monthly_cents === "number") {
+              var dollars = (plan.price_monthly_cents / 100).toFixed(0);
+              priceEl.textContent = "$" + dollars;
             }
 
-            items.forEach(function (text) {
-              var li = document.createElement("li");
-              li.className = "mt-1";
-              li.style.display = "flex";
-              li.style.gap = "0.4rem";
-              li.style.color = "var(--gray-600)";
+            var listEl = featuresMap[key];
+            if (listEl && Array.isArray(plan.features)) {
+              // Clear existing list items
+              listEl.innerHTML = "";
 
-              li.innerHTML =
-                '<i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>' +
-                "<span>" + String(text) + "</span>";
+              var items = plan.features;
 
-              listEl.appendChild(li);
-            });
+              // Optionally prepend monthly conversions as first bullet if provided
+              if (typeof plan.monthly_conversions === "number" && plan.monthly_conversions > 0) {
+                var conversionsText =
+                  plan.monthly_conversions.toLocaleString() + " QR codes/month";
+                items = [conversionsText].concat(items);
+              }
 
-            if (window.lucide) {
-              window.lucide.createIcons();
+              items.forEach(function (text) {
+                var li = document.createElement("li");
+                li.className = "mt-1";
+                li.style.display = "flex";
+                li.style.gap = "0.4rem";
+                li.style.color = "var(--gray-600)";
+
+                li.innerHTML =
+                  '<i data-lucide="check" style="width:18px;height:18px;color:var(--green-500);"></i>' +
+                  "<span>" + String(text) + "</span>";
+
+                listEl.appendChild(li);
+              });
+
+              if (window.lucide) {
+                window.lucide.createIcons();
+              }
             }
-          }
+          });
+        })
+        .catch(function (err) {
+          console.error("Failed to load pricing", err);
         });
-      })
-      .catch(function (err) {
-        console.error("Failed to load pricing", err);
-      });
 
-    function isProbablyLoggedIn() {
-      try {
-        if (!window.localStorage) return false;
-        for (var i = 0; i < window.localStorage.length; i++) {
-          var key = window.localStorage.key(i);
-          if (!key) continue;
-          // Supabase v2 auth token keys look like: sb-<project-ref>-auth-token
-          if (key.indexOf("sb-") === 0 && key.indexOf("auth-token") !== -1) {
-            var val = window.localStorage.getItem(key);
-            if (val && val !== "null") return true;
+      function isProbablyLoggedIn() {
+        try {
+          if (!window.localStorage) return false;
+          for (var i = 0; i < window.localStorage.length; i++) {
+            var key = window.localStorage.key(i);
+            if (!key) continue;
+            // Supabase v2 auth token keys look like: sb-<project-ref>-auth-token
+            if (key.indexOf("sb-") === 0 && key.indexOf("auth-token") !== -1) {
+              var val = window.localStorage.getItem(key);
+              if (val && val !== "null") return true;
+            }
           }
-        }
-      } catch (e) {}
-      return false;
-    }
+        } catch (e) { }
+        return false;
+      }
 
-    function startFromFeatures() {
-      var loggedIn = isProbablyLoggedIn();
-      var targetView = loggedIn ? "home" : "signup";
-      try {
-        window.localStorage.setItem("currentView", targetView);
-      } catch (e) {}
-      window.location.href = "/";
-    }
-
-    function scrollToPricing() {
-      const el = document.getElementById("pricing");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
-
-    function goToAppView(view) {
-      try {
-        window.localStorage.setItem("currentView", view);
-      } catch (e) {}
-      window.location.href = "/";
-    }
-
-    var btnViewPricingHero = document.getElementById("btn-view-pricing-hero");
-    if (btnViewPricingHero) {
-      btnViewPricingHero.onclick = function () {
-        goToAppView("pricing");
-      };
-    }
-
-    var btnGetStartedHero = document.getElementById("btn-get-started-hero");
-    if (btnGetStartedHero) {
-      btnGetStartedHero.onclick = function () {
-        startFromFeatures();
-      };
-    }
-
-    var btnGetStartedCta = document.getElementById("btn-get-started-cta");
-    if (btnGetStartedCta) {
-      btnGetStartedCta.onclick = function () {
-        startFromFeatures();
-      };
-    }
-
-    var btnContactSales = document.getElementById("btn-contact-sales");
-    if (btnContactSales) {
-      btnContactSales.onclick = function () {
-        window.location.href = "/contact.html";
-      };
-    }
-
-    var btnViewApiDocs = document.getElementById("btn-view-api-docs");
-    if (btnViewApiDocs) {
-      btnViewApiDocs.onclick = function () {
-        // If logged in, send to dashboard; otherwise send to login/auth page
+      function startFromFeatures() {
         var loggedIn = isProbablyLoggedIn();
-        var targetView = loggedIn ? "dashboard" : "login";
-        goToAppView(targetView);
-      };
-    }
+        var targetView = loggedIn ? "home" : "signup";
+        try {
+          window.localStorage.setItem("currentView", targetView);
+        } catch (e) { }
+        window.location.href = "/";
+      }
 
-    var btnSubscribeStarter = document.getElementById("btn-subscribe-starter");
-    if (btnSubscribeStarter) {
-      btnSubscribeStarter.onclick = function () {
-        goToAppView("pricing");
-      };
-    }
+      function scrollToPricing() {
+        const el = document.getElementById("pricing");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }
 
-    // For now, Professional and Business subscribe buttons send user to pricing page in app
-    var pricingButtons = [
-      document.querySelector('.pricing-card.pricing-popular .btn-solid'),
-      document.querySelectorAll('.pricing-card .btn-solid')[2]
-    ];
-    pricingButtons.forEach(function (btn) {
-      if (btn) {
-        btn.onclick = function () {
+      function goToAppView(view) {
+        try {
+          window.localStorage.setItem("currentView", view);
+        } catch (e) { }
+        window.location.href = "/";
+      }
+
+      var btnViewPricingHero = document.getElementById("btn-view-pricing-hero");
+      if (btnViewPricingHero) {
+        btnViewPricingHero.onclick = function () {
           goToAppView("pricing");
         };
       }
-    });
 
-    var footerFeatures = document.getElementById("footer-link-features");
-    if (footerFeatures) {
-      footerFeatures.onclick = function (e) {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      };
-    }
+      var btnGetStartedHero = document.getElementById("btn-get-started-hero");
+      if (btnGetStartedHero) {
+        btnGetStartedHero.onclick = function () {
+          startFromFeatures();
+        };
+      }
 
-    var footerPricing = document.getElementById("footer-link-pricing");
-    if (footerPricing) {
-      footerPricing.onclick = function (e) {
-        e.preventDefault();
-        scrollToPricing();
-      };
-    }
+      var btnGetStartedCta = document.getElementById("btn-get-started-cta");
+      if (btnGetStartedCta) {
+        btnGetStartedCta.onclick = function () {
+          startFromFeatures();
+        };
+      }
 
-    var footerApi = document.getElementById("footer-link-api");
-    if (footerApi) {
-      footerApi.onclick = function (e) {
-        e.preventDefault();
-        var apiSection = document.querySelector("#app section:nth-of-type(3)");
-        if (apiSection) {
-          apiSection.scrollIntoView({ behavior: "smooth" });
+      var btnContactSales = document.getElementById("btn-contact-sales");
+      if (btnContactSales) {
+        btnContactSales.onclick = function () {
+          window.location.href = "/contact.html";
+        };
+      }
+
+      var btnViewApiDocs = document.getElementById("btn-view-api-docs");
+      if (btnViewApiDocs) {
+        btnViewApiDocs.onclick = function () {
+          // If logged in, send to dashboard; otherwise send to login/auth page
+          var loggedIn = isProbablyLoggedIn();
+          var targetView = loggedIn ? "dashboard" : "login";
+          goToAppView(targetView);
+        };
+      }
+
+      var btnSubscribeStarter = document.getElementById("btn-subscribe-starter");
+      if (btnSubscribeStarter) {
+        btnSubscribeStarter.onclick = function () {
+          goToAppView("pricing");
+        };
+      }
+
+      // For now, Professional and Business subscribe buttons send user to pricing page in app
+      var pricingButtons = [
+        document.querySelector('.pricing-card.pricing-popular .btn-solid'),
+        document.querySelectorAll('.pricing-card .btn-solid')[2]
+      ];
+      pricingButtons.forEach(function (btn) {
+        if (btn) {
+          btn.onclick = function () {
+            goToAppView("pricing");
+          };
         }
-      };
-    }
+      });
 
-    var footerHowItWorks = document.getElementById("footer-link-how-it-works");
-    if (footerHowItWorks) {
-      footerHowItWorks.onclick = function (e) {
-        e.preventDefault();
-        var howSection = document.querySelector("#app section:nth-of-type(2)");
-        if (howSection) {
-          howSection.scrollIntoView({ behavior: "smooth" });
-        }
-      };
-    }
+      var footerFeatures = document.getElementById("footer-link-features");
+      if (footerFeatures) {
+        footerFeatures.onclick = function (e) {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+      }
 
-    var demoInput = document.getElementById("demo-input");
-    var demoOutput = document.getElementById("demo-output");
-    var demoCanvas = document.getElementById("demo-canvas");
-    var demoHelper = document.getElementById("demo-helper");
-    var QRiousLib = window.QRious;
+      var footerPricing = document.getElementById("footer-link-pricing");
+      if (footerPricing) {
+        footerPricing.onclick = function (e) {
+          e.preventDefault();
+          scrollToPricing();
+        };
+      }
 
-    if (!demoInput || !demoOutput || !demoCanvas || !demoHelper) {
-      console.warn("Demo QR elements not found; skipping demo wiring");
-      return;
-    }
+      var footerApi = document.getElementById("footer-link-api");
+      if (footerApi) {
+        footerApi.onclick = function (e) {
+          e.preventDefault();
+          var apiSection = document.querySelector("#app section:nth-of-type(3)");
+          if (apiSection) {
+            apiSection.scrollIntoView({ behavior: "smooth" });
+          }
+        };
+      }
 
-    if (!QRiousLib) {
-      console.error("QRious library not available on window. Check the CDN script tag.");
-      return;
-    }
+      var footerHowItWorks = document.getElementById("footer-link-how-it-works");
+      if (footerHowItWorks) {
+        footerHowItWorks.onclick = function (e) {
+          e.preventDefault();
+          var howSection = document.querySelector("#app section:nth-of-type(2)");
+          if (howSection) {
+            howSection.scrollIntoView({ behavior: "smooth" });
+          }
+        };
+      }
 
-    async function updateDemoQR(text) {
-      if (!text.trim()) {
-        demoOutput.innerHTML =
-          '<div style="display:flex;align-items:center;justify-content:center;height:200px;background:#f9fafb;border-radius:12px;border:2px dashed #d1d5db;"><div style="text-align:center;color:#9ca3af;"><i data-lucide="qr-code" style="width:48px;height:48px;margin:0 auto 0.5rem;"></i><p>QR code will appear here</p></div></div>';
-        if (window.lucide) window.lucide.createIcons();
-        demoHelper.style.display = "none";
+      var demoInput = document.getElementById("demo-input");
+      var demoOutput = document.getElementById("demo-output");
+      var demoCanvas = document.getElementById("demo-canvas");
+      var demoHelper = document.getElementById("demo-helper");
+      var QRiousLib = window.QRious;
+
+      if (!demoInput || !demoOutput || !demoCanvas || !demoHelper) {
+        console.warn("Demo QR elements not found; skipping demo wiring");
         return;
       }
 
-      try {
-        var qr = new QRiousLib({
-          element: demoCanvas,
-          value: text,
-          size: 200,
-          background: "#ffffff",
-          foreground: "#000000",
-          level: "L",
-        });
-
-        var url = qr.toDataURL();
-        demoOutput.innerHTML =
-          '<div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;">' +
-          '<div style="background:#fff;padding:1rem;border-radius:12px;border:2px solid #e5e7eb;"><img src="' +
-          url +
-          '" alt="QR code" style="width:200px;height:200px;"/></div>' +
-          '</div>';
-        demoHelper.style.display = "block";
-      } catch (e) {
-        console.error("Error generating QR:", e);
+      if (!QRiousLib) {
+        console.error("QRious library not available on window. Check the CDN script tag.");
+        return;
       }
-    }
 
-    demoInput.addEventListener("input", function (e) {
-      updateDemoQR(e.target.value || "");
+      async function updateDemoQR(text) {
+        if (!text.trim()) {
+          demoOutput.innerHTML =
+            '<div style="display:flex;align-items:center;justify-content:center;height:200px;background:#f9fafb;border-radius:12px;border:2px dashed #d1d5db;"><div style="text-align:center;color:#9ca3af;"><i data-lucide="qr-code" style="width:48px;height:48px;margin:0 auto 0.5rem;"></i><p>QR code will appear here</p></div></div>';
+          if (window.lucide) window.lucide.createIcons();
+          demoHelper.style.display = "none";
+          return;
+        }
+
+        try {
+          var qr = new QRiousLib({
+            element: demoCanvas,
+            value: text,
+            size: 200,
+            background: "#ffffff",
+            foreground: "#000000",
+            level: "L",
+          });
+
+          var url = qr.toDataURL();
+          demoOutput.innerHTML =
+            '<div style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;">' +
+            '<div style="background:#fff;padding:1rem;border-radius:12px;border:2px solid #e5e7eb;"><img src="' +
+            url +
+            '" alt="QR code" style="width:200px;height:200px;"/></div>' +
+            '</div>';
+          demoHelper.style.display = "block";
+        } catch (e) {
+          console.error("Error generating QR:", e);
+        }
+      }
+
+      demoInput.addEventListener("input", function (e) {
+        updateDemoQR(e.target.value || "");
+      });
     });
-  });
-</script>
+  </script>
 </body>
+
 </html>

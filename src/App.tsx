@@ -156,12 +156,21 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setCurrentView("home");
-    setConversions(0);
-    setPostAuthView(null);
-    setCheckoutPlan(null);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error);
+      }
+    } catch (err) {
+      console.error("Unexpected error during logout:", err);
+    } finally {
+      setUser(null);
+      setCurrentView("home");
+      setConversions(0);
+      setPostAuthView(null);
+      setCheckoutPlan(null);
+      toast.error("Logged out successfully");
+    }
   };
 
   const handleConversion = async (text: string, qrCodeUrl: string) => {
@@ -549,7 +558,7 @@ export default function App() {
                   Features
                 </Button>
                 <Button
-                  variant="ghost"
+                  variant={currentView === "pricing" ? "default" : "ghost"}
                   onClick={() => setCurrentView("pricing")}
                   className="gap-2"
                 >
@@ -575,7 +584,7 @@ export default function App() {
                       <p className="text-sm text-gray-700">{user.name}</p>
                       <p className="text-xs text-gray-500 capitalize">{user.plan} Plan</p>
                     </div>
-                    <Button variant="outline" onClick={handleLogout} className="gap-2">
+                    <Button variant="outline" onClick={handleLogout} className="gap-2 cursor-pointer relative z-50">
                       <LogOut className="w-4 h-4" />
                       Logout
                     </Button>
@@ -655,7 +664,7 @@ export default function App() {
                 Features
               </Button>
               <Button
-                variant="ghost"
+                variant={currentView === "pricing" ? "default" : "ghost"}
                 onClick={() => {
                   setCurrentView("pricing");
                   setMobileMenuOpen(false);
@@ -753,8 +762,8 @@ export default function App() {
 
       {currentView === "history" && user && (
         <section className="container mx-auto px-4 py-8">
-          <History 
-            conversions={conversionHistory} 
+          <History
+            conversions={conversionHistory}
             onDeleteConversion={handleDeleteConversion}
           />
         </section>

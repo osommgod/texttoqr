@@ -7,6 +7,7 @@ import { QrCode, Mail, Lock, ArrowRight } from "lucide-react";
 import { User } from "../types";
 import { supabase } from "../lib/supabaseClient";
 import { ensureUserProfile } from "../lib/userService";
+import { toast } from "sonner";
 
 interface LoginProps {
   onLogin: (user: User) => void;
@@ -42,7 +43,7 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -57,7 +58,7 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
       });
 
       if (error || !data.user) {
-        setServerError(error?.message || "Invalid email or password.");
+        toast.error(error?.message || "Invalid email or password.");
         return;
       }
 
@@ -69,14 +70,15 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
       });
 
       if (!profile) {
-        setServerError("Unable to load your account. Please try again.");
+        toast.error("Unable to load your account. Please try again.");
         return;
       }
 
+      toast.success("Successfully logged in!");
       onLogin(profile);
     } catch (err) {
       console.error("Login failed", err);
-      setServerError("Something went wrong while logging you in. Please try again.");
+      toast.error("Something went wrong while logging you in. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -186,17 +188,17 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
             </Button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+          {/* Demo Credentials - Hidden for now */}
+          {/* <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
             <p className="text-sm text-indigo-900 mb-2">Demo Credentials:</p>
             <p className="text-xs text-indigo-700">
               <strong>User:</strong> demo@example.com / demo123<br />
               <strong>Admin:</strong> admin@qrgen.com / admin123
             </p>
-          </div>
+          </div> */}
 
-          {/* Social Login */}
-          <div className="mt-6">
+          {/* Social Login - Hidden for now */}
+          {/* <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300" />
@@ -241,7 +243,7 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
                 GitHub
               </Button>
             </div>
-          </div>
+          </div> */}
         </Card>
 
         {/* Sign Up Link */}

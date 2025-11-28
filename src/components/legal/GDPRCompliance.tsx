@@ -38,7 +38,7 @@ export function GDPRCompliance() {
             data, and to object to certain processing activities.
           </p>
           <p>
-            Requests can be submitted to <span className="font-medium">privacy@qrgenpro.com</span>. We will respond in
+            Requests can be submitted to <span className="font-medium">privacy@text2qr.online</span>. We will respond in
             accordance with applicable laws and may need to verify your identity before fulfilling a request.
           </p>
 
@@ -77,7 +77,7 @@ export function GDPRCompliance() {
           <p>
             <span className="font-medium">Data Protection Contact</span>
             <br />
-            Email: <span className="font-medium">privacy@qrgenpro.com</span>
+            Email: <span className="font-medium">privacy@text2qr.online</span>
           </p>
 
           <h2 className="font-semibold text-gray-900">9. Updates to This Statement</h2>

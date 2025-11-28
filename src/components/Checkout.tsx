@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
+import { supabase } from "../lib/supabaseClient";
+import { toast } from "sonner";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import { Badge } from "./ui/badge";
@@ -13,11 +15,9 @@ import {
   ArrowRight,
   Building2,
   Check,
-  CreditCard as CreditCardIcon,
   MapPin,
   Phone,
   ShieldCheck,
-  Smartphone,
 } from "lucide-react";
 import { PricingTier, fallbackPricingTiers } from "../lib/pricing";
 import { User } from "../types";
@@ -34,6 +34,19 @@ export type PaymentMethod = "card" | "upi" | "gateway";
 export interface PaymentSuccessPayload {
   paymentMethod: PaymentMethod;
   gateway?: string;
+}
+
+interface Coupon {
+  id: string;
+  code: string;
+  discount_percentage: number;
+  created_at: string;
+  expires_at: string;
+  usage_type: 'single' | 'multi';
+  used_by: any[];
+  is_active: boolean;
+  max_uses: number | null;
+  description: string | null;
 }
 
 interface CheckoutProps {
@@ -78,7 +91,9 @@ export function Checkout({
     gstNumber: "",
   });
   const [couponCode, setCouponCode] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+  const [paymentMethod] = useState<PaymentMethod>("gateway");
   const [selectedGateway, setSelectedGateway] = useState<typeof paymentGateways[number]>(paymentGateways[0]);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,7 +104,72 @@ export function Checkout({
     return numericPrice;
   }, [plan.price]);
 
-  const discount = useMemo(() => (couponCode.trim() ? subtotal * 0.1 : 0), [couponCode, subtotal]);
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+
+    setIsValidatingCoupon(true);
+    setAppliedCoupon(null);
+
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('code', couponCode.trim().toUpperCase())
+        .eq('is_active', true)
+        .single();
+
+      if (error || !data) {
+        toast.error("Invalid coupon code");
+        setIsValidatingCoupon(false);
+        return;
+      }
+
+      const coupon = data as Coupon;
+
+      // Check expiry
+      if (new Date(coupon.expires_at) < new Date()) {
+        toast.error("This coupon has expired");
+        setIsValidatingCoupon(false);
+        return;
+      }
+
+      // Check max uses
+      let usedBy = coupon.used_by;
+      if (typeof usedBy === 'string') {
+        try { usedBy = JSON.parse(usedBy); } catch (e) { usedBy = []; }
+      }
+      if (!Array.isArray(usedBy)) usedBy = [];
+
+      if (coupon.max_uses !== null && usedBy.length >= coupon.max_uses) {
+        toast.error("This coupon has reached its usage limit");
+        setIsValidatingCoupon(false);
+        return;
+      }
+
+      // Check single use per user
+      if (coupon.usage_type === 'single' && user) {
+        if (usedBy.includes(user.id)) {
+          toast.error("You have already used this coupon");
+          setIsValidatingCoupon(false);
+          return;
+        }
+      }
+
+      setAppliedCoupon(coupon);
+      toast.success("Coupon applied successfully!");
+
+    } catch (err) {
+      console.error("Error validating coupon:", err);
+      toast.error("Failed to validate coupon");
+    } finally {
+      setIsValidatingCoupon(false);
+    }
+  };
+
+  const discount = useMemo(() => {
+    if (!appliedCoupon) return 0;
+    return subtotal * (appliedCoupon.discount_percentage / 100);
+  }, [appliedCoupon, subtotal]);
   const tax = useMemo(() => (subtotal - discount) * 0.18, [discount, subtotal]);
   const total = useMemo(() => subtotal - discount + tax, [subtotal, discount, tax]);
 
@@ -253,12 +333,19 @@ export function Checkout({
                       placeholder="SAVE10"
                       value={couponCode}
                       onChange={event => setCouponCode(event.target.value)}
+                      disabled={isValidatingCoupon || !!appliedCoupon}
                     />
-                    <Button type="button" variant="outline">
-                      Apply
-                    </Button>
+                    {appliedCoupon ? (
+                      <Button type="button" variant="outline" onClick={() => { setAppliedCoupon(null); setCouponCode(""); }}>
+                        Remove
+                      </Button>
+                    ) : (
+                      <Button type="button" variant="outline" onClick={handleApplyCoupon} disabled={isValidatingCoupon || !couponCode.trim()}>
+                        {isValidatingCoupon ? "..." : "Apply"}
+                      </Button>
+                    )}
                   </div>
-                  {couponCode.trim() && <p className="text-sm text-green-600">10% discount applied</p>}
+                  {appliedCoupon && <p className="text-sm text-green-600">{appliedCoupon.discount_percentage}% discount applied</p>}
                 </div>
               </div>
             </div>
@@ -272,111 +359,29 @@ export function Checkout({
                 </p>
               </div>
 
-              <RadioGroup
-                value={paymentMethod}
-                onValueChange={(value: string) => setPaymentMethod(value as PaymentMethod)}
-                className="grid gap-3 md:grid-cols-3"
-              >
-                <label className={`border rounded-lg p-4 flex flex-col gap-2 cursor-pointer transition hover:bg-gray-50 ${paymentMethod === "card" ? "border-indigo-500 shadow-sm" : "border-gray-200"}`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <CreditCardIcon className="w-4 h-4 text-indigo-600" />
-                      <span className="font-medium text-gray-900">Card</span>
-                    </div>
-                    <RadioGroupItem value="card" id="card" />
-                  </div>
-                  <p className="text-xs text-gray-500">Visa, Mastercard, AMEX, RuPay</p>
-                </label>
-
-                <label className={`border rounded-lg p-4 flex flex-col gap-2 cursor-pointer transition hover:bg-gray-50 ${paymentMethod === "upi" ? "border-indigo-500 shadow-sm" : "border-gray-200"}`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Smartphone className="w-4 h-4 text-indigo-600" />
-                      <span className="font-medium text-gray-900">UPI</span>
-                    </div>
-                    <RadioGroupItem value="upi" id="upi" />
-                  </div>
-                  <p className="text-xs text-gray-500">Google Pay, PhonePe, Paytm</p>
-                </label>
-
-                <label className={`border rounded-lg p-4 flex flex-col gap-2 cursor-pointer transition hover:bg-gray-50 ${paymentMethod === "gateway" ? "border-indigo-500 shadow-sm" : "border-gray-200"}`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-indigo-600" />
-                      <span className="font-medium text-gray-900">Gateway</span>
-                    </div>
-                    <RadioGroupItem value="gateway" id="gateway" />
-                  </div>
-                  <p className="text-xs text-gray-500">Pay with Razorpay, PayU, Stripe, PayPal</p>
-                </label>
-              </RadioGroup>
-
-              {paymentMethod === "card" && (
-                <div className="grid gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="cardNumber">Card Number</Label>
-                    <div className="relative">
-                      <CreditCardIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <Input id="cardNumber" placeholder="4242 4242 4242 4242" className="pl-10" required />
-                    </div>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="cardExpiry">Expiry Date</Label>
-                      <Input id="cardExpiry" placeholder="MM/YY" required />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cardCvv">CVV</Label>
-                      <Input id="cardCvv" placeholder="123" required />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cardHolder">Name on Card</Label>
-                    <Input id="cardHolder" placeholder="Jane Doe" required />
-                  </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="gatewaySelect">Choose Gateway</Label>
+                  <Select
+                    value={selectedGateway}
+                    onValueChange={(value: string) => setSelectedGateway(value as typeof paymentGateways[number])}
+                  >
+                    <SelectTrigger id="gatewaySelect">
+                      <SelectValue placeholder="Select a gateway" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {paymentGateways.map(gateway => (
+                        <SelectItem key={gateway} value={gateway}>
+                          {gateway}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-              )}
-
-              {paymentMethod === "upi" && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="upiId">UPI ID</Label>
-                    <div className="relative">
-                      <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <Input id="upiId" placeholder="name@bank" className="pl-10" required />
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-500">
-                    A payment request will be sent to your UPI app. Approve it within 5 minutes to complete the upgrade.
-                  </p>
-                </div>
-              )}
-
-              {paymentMethod === "gateway" && (
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="gatewaySelect">Choose Gateway</Label>
-                    <Select
-                      value={selectedGateway}
-                      onValueChange={(value: string) => setSelectedGateway(value as typeof paymentGateways[number])}
-                    >
-                      <SelectTrigger id="gatewaySelect">
-                        <SelectValue placeholder="Select a gateway" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {paymentGateways.map(gateway => (
-                          <SelectItem key={gateway} value={gateway}>
-                            {gateway}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <p className="text-sm text-gray-500">
-                    We'll pop open the {selectedGateway} checkout so you can pay in your preferred currency and method.
-                  </p>
-                </div>
-              )}
+                <p className="text-sm text-gray-500">
+                  We'll pop open the {selectedGateway} checkout so you can pay in your preferred currency and method.
+                </p>
+              </div>
 
               <div className="flex flex-col gap-4">
                 <label className="flex items-start gap-3 text-sm text-gray-600">

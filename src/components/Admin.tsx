@@ -32,6 +32,7 @@ import {
 import { Progress } from "./ui/progress";
 import { supabase } from "../lib/supabaseClient";
 import { User, PlanType, AppConfig } from "../types";
+import { toast } from "sonner";
 
 interface AdminUser extends User {
   joinDate?: string;
@@ -207,6 +208,9 @@ export function Admin({ currentUser }: AdminProps) {
       .then(({ error }) => {
         if (error) {
           console.error("Failed to update user plan", error);
+          toast.error("Failed to update user plan");
+        } else {
+          toast.success("User plan updated successfully");
         }
       });
   };
@@ -225,6 +229,9 @@ export function Admin({ currentUser }: AdminProps) {
       .then(({ error }) => {
         if (error) {
           console.error("Failed to update user status", error);
+          toast.error("Failed to update user status");
+        } else {
+          toast.success(`User status updated to ${status}`);
         }
       });
   };
@@ -241,6 +248,9 @@ export function Admin({ currentUser }: AdminProps) {
       .then(({ error }) => {
         if (error) {
           console.error("Failed to reset conversions", error);
+          toast.error("Failed to reset conversions");
+        } else {
+          toast.success("Conversions reset successfully");
         }
       });
   };
@@ -270,6 +280,9 @@ export function Admin({ currentUser }: AdminProps) {
         .then(({ error }) => {
           if (error) {
             console.error("Failed to update plan", error);
+            toast.error("Failed to update plan");
+          } else {
+            toast.success("Plan updated successfully");
           }
         });
     }
@@ -297,6 +310,7 @@ export function Admin({ currentUser }: AdminProps) {
 
     if (error) {
       console.error("Failed to reset all conversions", error);
+      toast.error("Failed to reset all conversions");
       return;
     }
 
@@ -305,7 +319,9 @@ export function Admin({ currentUser }: AdminProps) {
 
     const count = resetIds.size;
     if (count === 0) {
-      console.info("No users had conversions to reset.");
+      toast.info("No users had conversions to reset.");
+    } else {
+      toast.success(`Reset conversions for ${count} users.`);
     }
   };
 
@@ -316,6 +332,7 @@ export function Admin({ currentUser }: AdminProps) {
 
     if (error || !data) {
       console.error("Failed to export user data", error);
+      toast.error("Failed to export user data");
       return;
     }
 
@@ -368,6 +385,7 @@ export function Admin({ currentUser }: AdminProps) {
 
     if (error) {
       console.error("Failed to suspend inactive users", error);
+      toast.error("Failed to suspend inactive users");
       return;
     }
 
@@ -380,13 +398,15 @@ export function Admin({ currentUser }: AdminProps) {
 
     const count = suspendedIds.size;
     if (count === 0) {
-      console.info("No inactive users to suspend.");
+      toast.info("No inactive users to suspend.");
+    } else {
+      toast.success(`Suspended ${count} inactive users.`);
     }
   };
 
   const handleCreateCoupon = async () => {
     if (!newCoupon.code.trim()) {
-      alert('Coupon code is required');
+      toast.warning('Coupon code is required');
       return;
     }
 
@@ -406,7 +426,7 @@ export function Admin({ currentUser }: AdminProps) {
 
     if (error) {
       console.error('Failed to create coupon:', error);
-      alert('Failed to create coupon: ' + error.message);
+      toast.error('Failed to create coupon: ' + error.message);
       return;
     }
 
@@ -421,6 +441,7 @@ export function Admin({ currentUser }: AdminProps) {
         max_uses: null,
         description: ''
       });
+      toast.success("Coupon created successfully");
     }
   };
 
@@ -432,7 +453,10 @@ export function Admin({ currentUser }: AdminProps) {
 
     if (error) {
       console.error('Failed to update coupon:', error);
+      toast.error("Failed to update coupon");
       return;
+    } else {
+      toast.success("Coupon updated successfully");
     }
 
     setCoupons(coupons.map(c => c.id === couponId ? { ...c, ...updates } : c));
@@ -448,7 +472,10 @@ export function Admin({ currentUser }: AdminProps) {
 
     if (error) {
       console.error('Failed to delete coupon:', error);
+      toast.error("Failed to delete coupon");
       return;
+    } else {
+      toast.success("Coupon deleted successfully");
     }
 
     setCoupons(coupons.filter(c => c.id !== couponId));
@@ -491,7 +518,7 @@ export function Admin({ currentUser }: AdminProps) {
       const usageCount = usedBy.length;
 
       if (usageCount === 0) {
-        alert('0 users have used this coupon');
+        toast.info('0 users have used this coupon');
         console.log("[Admin] Coupon has 0 uses, dialog will not open.");
         return;
       }
@@ -502,7 +529,7 @@ export function Admin({ currentUser }: AdminProps) {
 
     } catch (error) {
       console.error('Error viewing coupon users:', error);
-      alert('Something went wrong trying to view the users list.');
+      toast.error('Something went wrong trying to view the users list.');
     }
   };
 
@@ -1050,15 +1077,26 @@ export function Admin({ currentUser }: AdminProps) {
                     if (!appConfig) return;
 
                     const enableRegistration = registrationMode !== "disabled";
+                    const newFreeLimit = parseInt(defaultFreePlanLimit || "10", 10);
 
-                    await supabase
-                      .from("app_configs")
-                      .update({
-                        default_free_plan_limit: parseInt(defaultFreePlanLimit || "10", 10),
-                        conversion_reset_period: conversionResetPeriod,
-                        enable_user_registration: enableRegistration,
-                      })
-                      .eq("id", appConfig.id);
+                    await Promise.all([
+                      supabase
+                        .from("app_configs")
+                        .update({
+                          default_free_plan_limit: newFreeLimit,
+                          conversion_reset_period: conversionResetPeriod,
+                          enable_user_registration: enableRegistration,
+                        })
+                        .eq("id", appConfig.id),
+                      supabase
+                        .from("plans")
+                        .update({ monthly_conversions: newFreeLimit })
+                        .eq("id", "free")
+                    ]);
+
+                    // Update local state for plans to reflect the change immediately
+                    setPlans(plans.map(p => p.id === "free" ? { ...p, conversions: newFreeLimit } : p));
+                    toast.success("Settings saved successfully!");
                   }}
                 >
                   Save Settings

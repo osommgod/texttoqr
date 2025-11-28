@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -8,6 +8,7 @@ import { QrCode, Mail, Lock, User as UserIcon, ArrowRight, Check } from "lucide-
 import { User, PlanType } from "../types";
 import { supabase } from "../lib/supabaseClient";
 import { ensureUserProfile } from "../lib/userService";
+import { toast } from "sonner";
 
 interface SignupProps {
   onSignup: (user: User) => void;
@@ -22,10 +23,10 @@ interface PlanOption {
 }
 
 const planOptions: PlanOption[] = [
-  { id: "free", name: "Free", price: "$0/mo", conversions: "10 conversions" },
-  { id: "starter", name: "Starter", price: "$9/mo", conversions: "100 conversions" },
-  { id: "professional", name: "Professional", price: "$29/mo", conversions: "500 conversions" },
-  { id: "business", name: "Business", price: "$79/mo", conversions: "2,000 conversions" },
+  { id: "free", name: "Free", price: "$0/mo", conversions: "250 conversions" },
+  // { id: "starter", name: "Starter", price: "$9/mo", conversions: "100 conversions" },
+  // { id: "professional", name: "Professional", price: "$29/mo", conversions: "500 conversions" },
+  // { id: "business", name: "Business", price: "$79/mo", conversions: "2,000 conversions" },
 ];
 
 export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
@@ -72,9 +73,32 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
     return Object.keys(newErrors).length === 0;
   };
 
+  const [registrationEnabled, setRegistrationEnabled] = useState(true);
+
+  useEffect(() => {
+    const checkRegistrationStatus = async () => {
+      const { data } = await supabase
+        .from("app_configs")
+        .select("enable_user_registration")
+        .eq("config_key", "global")
+        .single();
+
+      if (data) {
+        setRegistrationEnabled(data.enable_user_registration);
+      }
+    };
+
+    checkRegistrationStatus();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (!registrationEnabled) {
+      toast.warning("We are not onboarding new users at this time.");
+      return;
+    }
+
     if (!validateForm()) {
       return;
     }
@@ -94,13 +118,13 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
       });
 
       if (error) {
-        setServerError(error.message || "Unable to create account. Please try again.");
+        toast.error(error.message || "Unable to create account. Please try again.");
         return;
       }
 
       const supabaseUser = data.user;
       if (!supabaseUser) {
-        setServerError("Please verify your email to finish setting up your account.");
+        toast.error("Please verify your email to finish setting up your account.");
         return;
       }
 
@@ -112,14 +136,15 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
       });
 
       if (!profile) {
-        setServerError("We couldn't provision your dashboard. Please try again.");
+        toast.error("We couldn't provision your dashboard. Please try again.");
         return;
       }
 
+      toast.success("Account created successfully!");
       onSignup(profile);
     } catch (err) {
       console.error("Signup failed", err);
-      setServerError("Something went wrong while creating your account. Please try again.");
+      toast.error("Something went wrong while creating your account. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -319,8 +344,8 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
             </Button>
           </form>
 
-          {/* Social Signup */}
-          <div className="mt-6">
+          {/* Social Signup - Hidden for now */}
+          {/* <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300" />
@@ -365,7 +390,7 @@ export function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
                 GitHub
               </Button>
             </div>
-          </div>
+          </div> */}
         </Card>
 
         {/* Login Link */}

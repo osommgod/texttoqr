@@ -40,7 +40,7 @@ export function RefundCancellationPolicy() {
             As a general rule, payments are non-refundable once a billing period has started. In exceptional
             circumstances (such as duplicate charges or technical issues preventing use of the Service), we may, at
             our sole discretion, provide a partial or full refund. Any refund requests must be submitted within
-            14 days of the charge by contacting support@qrgenpro.com.
+            14 days of the charge by contacting support@text2qr.online.
           </p>
 
           <h2 className="font-semibold text-gray-900">5. Upgrades &amp; Downgrades</h2>
@@ -65,7 +65,7 @@ export function RefundCancellationPolicy() {
           <h2 className="font-semibold text-gray-900">8. Contact</h2>
           <p>
             For any questions regarding cancellations or refunds, please contact us at
-            <span className="font-medium"> support@qrgenpro.com</span> with your registered email address and
+            <span className="font-medium"> support@text2qr.online</span> with your registered email address and
             relevant payment details.
           </p>
         </div>

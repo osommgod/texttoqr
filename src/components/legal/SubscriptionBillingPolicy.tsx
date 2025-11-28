@@ -68,7 +68,7 @@ export function SubscriptionBillingPolicy() {
           <h2 className="font-semibold text-gray-900">9. Contact</h2>
           <p>
             For billing-related questions, invoices, or account changes, please contact us at
-            <span className="font-medium"> billing@qrgenpro.com</span> or through the support channels listed on our
+            <span className="font-medium"> billing@text2qr.online</span> or through the support channels listed on our
             website.
           </p>
         </div>
