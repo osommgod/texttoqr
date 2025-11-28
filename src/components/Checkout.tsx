@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { toast } from "sonner";
 import { Card } from "./ui/card";
@@ -28,6 +28,15 @@ import {
   PAYMENT_GATEWAYS,
   PCI_STATEMENT,
 } from "../details";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { StripePayment } from "./payment/StripePayment";
+import { BraintreePayment } from "./payment/BraintreePayment";
 
 export type PaymentMethod = "card" | "upi" | "gateway";
 
@@ -95,9 +104,17 @@ export function Checkout({
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
   const [paymentMethod] = useState<PaymentMethod>("gateway");
   const [selectedGateway, setSelectedGateway] = useState<typeof paymentGateways[number]>(paymentGateways[0]);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  // Track modal state changes
+  useEffect(() => {
+    if (isPaymentModalOpen) {
+      // Modal opened
+    }
+  }, [isPaymentModalOpen]);
 
   const subtotal = useMemo(() => {
     const numericPrice = Number(plan.price.replace(/[^0-9.]/g, "")) || 0;
@@ -177,24 +194,56 @@ export function Checkout({
     setBillingDetails(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handlePaymentSuccess = async (details: any) => {
+    setIsPaymentModalOpen(false);
+    const toastId = toast.loading("Processing upgrade...");
+
+    try {
+      if (user) {
+        const { error } = await supabase
+          .from('users_custom')
+          .update({ plan: plan.planType })
+          .eq('id', user.id);
+
+        if (error) throw error;
+      }
+
+      toast.success("Upgrade successful! Redirecting...", { id: toastId });
+      setStatusMessage("Payment successful! Redirecting you to your upgraded dashboard.");
+
+      // Add a small delay so user sees the success message
+      setTimeout(() => {
+        onPaymentSuccess?.({ paymentMethod, gateway: selectedGateway });
+      }, 1500);
+
+    } catch (error: any) {
+      console.error("Upgrade failed:", error);
+      toast.error("Payment successful but failed to update plan. Please contact support.", { id: toastId });
+      setStatusMessage("Payment successful but failed to update plan. Please contact support.");
+    }
+  };
+
+  const handlePaymentError = (error: string) => {
+    setStatusMessage(error);
+    toast.error(error);
+  };
+
+  const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     if (!agreeToTerms) {
       setStatusMessage("Please accept the terms to continue.");
+      toast.error("Please accept the terms to continue.");
       return;
     }
 
-    setIsSubmitting(true);
+    if (!user) {
+      toast.error("You must be logged in to upgrade.");
+      return;
+    }
+
+    setIsPaymentModalOpen(true);
     setStatusMessage(null);
-
-    // Simulate a payment intent while integration hooks are wired up.
-    await new Promise(resolve => setTimeout(resolve, 1200));
-
-    setIsSubmitting(false);
-    setStatusMessage("Payment successful! Redirecting you to your upgraded dashboard.");
-
-    onPaymentSuccess?.({ paymentMethod, gateway: paymentMethod === "gateway" ? selectedGateway : undefined });
   };
 
   return (
@@ -212,7 +261,7 @@ export function Checkout({
 
       <div className="grid gap-8 lg:grid-cols-3">
         <Card className="p-6 lg:col-span-2">
-          <form className="space-y-10" onSubmit={handleSubmit}>
+          <div className="space-y-10">
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-4">Step 1</p>
@@ -400,22 +449,20 @@ export function Checkout({
                   </div>
                 )}
 
-                <div className="flex flex-wrap gap-3">
-                  <Button type="submit" disabled={isSubmitting} className="gap-2">
+                <div className="mt-4">
+                  <Button type="button" onClick={handleSubmit} disabled={isSubmitting || !agreeToTerms} className="gap-2 w-full">
                     {isSubmitting ? "Processing..." : `Pay ${planPriceDisplay}/mo`}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
-                  <Button type="button" variant="outline" onClick={onBackToPricing}>
-                    Choose Another Plan
-                  </Button>
                 </div>
-                <p className="text-xs text-gray-500 flex items-center gap-2">
+
+                <p className="text-xs text-gray-500 flex items-center gap-2 mt-2">
                   <ShieldCheck className="w-4 h-4 text-green-600" />
                   Payments secured by PCI-DSS compliant providers.
                 </p>
               </div>
             </div>
-          </form>
+          </div>
         </Card>
 
         <div className="space-y-6">
@@ -541,6 +588,45 @@ export function Checkout({
           </Card>
         </div>
       </div>
+
+      {isPaymentModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+          onClick={() => setIsPaymentModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-lg p-6 w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] relative z-[100] max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsPaymentModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl"
+            >
+              ✕
+            </button>
+            <h2 className="text-lg font-semibold mb-2">Complete Payment</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Enter your payment details to upgrade to the <strong>{plan.name}</strong> plan.
+            </p>
+            <div className="mt-4">
+              {selectedGateway === "Stripe" && (
+                <StripePayment
+                  amount={total}
+                  onSuccess={handlePaymentSuccess}
+                  onError={handlePaymentError}
+                />
+              )}
+              {selectedGateway === "PayPal" && (
+                <BraintreePayment
+                  amount={total}
+                  onSuccess={handlePaymentSuccess}
+                  onError={handlePaymentError}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

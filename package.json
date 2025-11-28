@@ -30,7 +30,10 @@
             "@radix-ui/react-toggle": "^1.1.2",
             "@radix-ui/react-toggle-group": "^1.1.2",
             "@radix-ui/react-tooltip": "^1.1.8",
+            "@stripe/react-stripe-js": "^5.4.1",
+            "@stripe/stripe-js": "^8.5.3",
             "@supabase/supabase-js": "^2.81.1",
+            "braintree-web-drop-in": "^1.46.0",
             "class-variance-authority": "^0.7.1",
             "clsx": "*",
             "cmdk": "^1.1.1",
@@ -52,6 +55,7 @@
             "vaul": "^1.1.2"
       },
       "devDependencies": {
+            "@types/braintree-web-drop-in": "^1.39.4",
             "@types/node": "^20.10.0",
             "@types/qrcode": "^1.5.6",
             "@types/react": "^19.2.5",

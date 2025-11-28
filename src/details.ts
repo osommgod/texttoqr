@@ -13,15 +13,15 @@ export const COMPLIANCE_PHONE = "+91 9876543210";
 export const COMPANY_ADDRESS = "32 Kalpana Square, Bhubaneswar, Odisha 751007";
 
 export const SOCIAL_LINKS = {
-  linkedin: "https://linkedin.com/company/gentext2qr",
+  linkedin: "https://www.linkedin.com/in/text-to-qr-3a4001398/",
   twitter: "https://twitter.com/gentext2qr",
-  facebook: "https://facebook.com/gentext2qr",
+  facebook: "https://www.facebook.com/profile.php?id=100079102780042",
 };
 
-export const PAYMENT_GATEWAYS = ["Razorpay", "PayU", "Stripe", "PayPal"] as const;
+export const PAYMENT_GATEWAYS = ["Stripe", "PayPal"] as const;
 
 export const PAYMENT_TAGLINE =
-  "Payments secured by Stripe, PayPal, Razorpay & PayU.";
+  "Payments secured by Stripe & PayPal";
 
 export const PCI_STATEMENT = "Payments secured by PCI-DSS compliant providers.";
 
@@ -29,3 +29,7 @@ export type PaymentGateway = (typeof PAYMENT_GATEWAYS)[number];
 
 // Optional: country used in certain legal/policy copy (not wired yet)
 export const COMPANY_COUNTRY = "INDIA";
+
+// Payment Gateway Configuration
+export const STRIPE_PUBLISHABLE_KEY = "pk_test_TYooMQauvdEDq54NiTphI7jx"; // Replace with your Stripe Publishable Key
+export const BRAINTREE_TOKENIZATION_KEY = "sandbox_f252zhq7_hh4cpc39zq4rgjcg"; // Replace with your Braintree Tokenization Key

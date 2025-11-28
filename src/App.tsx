@@ -7,6 +7,8 @@ import { Login } from "./components/Login";
 import { Signup } from "./components/Signup";
 import { History } from "./components/History";
 import { Admin } from "./components/Admin";
+import { PaymentSuccess } from "./components/PaymentSuccess";
+import { PaymentFailure } from "./components/PaymentFailure";
 import { TermsOfService } from "./components/legal/TermsOfService";
 import { PrivacyPolicy } from "./components/legal/PrivacyPolicy";
 import { RefundCancellationPolicy } from "./components/legal/RefundCancellationPolicy";
@@ -64,6 +66,8 @@ type ViewType =
   | "history"
   | "admin"
   | "checkout"
+  | "payment-success"
+  | "payment-failure"
   | "terms"
   | "privacy"
   | "refund"
@@ -86,6 +90,7 @@ export default function App() {
   const [conversionHistory, setConversionHistory] = useState<ConversionRecord[]>([]);
   const [checkoutPlan, setCheckoutPlan] = useState<PricingTier | null>(null);
   const [postAuthView, setPostAuthView] = useState<ViewType | null>(null);
+  const [paymentResult, setPaymentResult] = useState<{ planName: string; amount: number; error?: string } | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -287,7 +292,19 @@ export default function App() {
 
   useEffect(() => {
     if (currentView === "checkout" && !checkoutPlan) {
-      setCheckoutPlan(getUpgradeSuggestion(user?.plan));
+      // Try to restore from localStorage first
+      const savedPlan = localStorage.getItem("checkoutPlan");
+      if (savedPlan) {
+        try {
+          const parsedPlan = JSON.parse(savedPlan) as PricingTier;
+          setCheckoutPlan(parsedPlan);
+        } catch (e) {
+          console.error("Failed to parse saved checkout plan", e);
+          setCheckoutPlan(getUpgradeSuggestion(user?.plan));
+        }
+      } else {
+        setCheckoutPlan(getUpgradeSuggestion(user?.plan));
+      }
     }
   }, [currentView, checkoutPlan, user?.plan]);
 
@@ -378,11 +395,13 @@ export default function App() {
     if (user && !canUpgradeTo(user.plan, tier.planType)) {
       toast.info("You already have this plan or a higher one");
       setCheckoutPlan(null);
+      localStorage.removeItem("checkoutPlan");
       setCurrentView("pricing");
       return;
     }
 
     setCheckoutPlan(tier);
+    localStorage.setItem("checkoutPlan", JSON.stringify(tier));
     setCurrentView("checkout");
     setMobileMenuOpen(false);
   };
@@ -390,6 +409,7 @@ export default function App() {
   const handleSelectPlan = (tier: PricingTier) => {
     if (!user) {
       setCheckoutPlan(tier);
+      localStorage.setItem("checkoutPlan", JSON.stringify(tier));
       setPostAuthView("checkout");
       setCurrentView("login");
       setMobileMenuOpen(false);
@@ -405,25 +425,14 @@ export default function App() {
   };
 
   const handleUpgradePlan = () => {
-    const suggestedTier = getUpgradeSuggestion(user?.plan);
-    if (!suggestedTier) {
-      return;
-    }
-
-    if (!user) {
-      setCheckoutPlan(suggestedTier);
-      setPostAuthView("checkout");
-      setCurrentView("login");
-      setMobileMenuOpen(false);
-      return;
-    }
-
-    startCheckoutFlow(suggestedTier);
+    setCurrentView("pricing");
+    setMobileMenuOpen(false);
   };
 
   const handlePaymentSuccess = async (_payload: PaymentSuccessPayload) => {
     if (!user || !checkoutPlan) {
       setCheckoutPlan(null);
+      localStorage.removeItem("checkoutPlan");
       setCurrentView("pricing");
       return;
     }
@@ -446,6 +455,13 @@ export default function App() {
 
     if (error) {
       console.error("Failed to persist upgraded plan", error);
+      // Show failure page even if DB update fails
+      setPaymentResult({
+        planName: checkoutPlan.name,
+        amount: parseFloat(checkoutPlan.price.replace(/[^0-9.]/g, "")) || 0,
+        error: "Payment successful but failed to update plan. Please contact support.",
+      });
+      setCurrentView("payment-failure");
     } else {
       setUser({
         ...user,
@@ -453,10 +469,28 @@ export default function App() {
         planStartedAt: planStartedIso,
         planRenewsAt: planRenewsIso,
       });
+
+      // Store payment result and redirect to success page
+      setPaymentResult({
+        planName: checkoutPlan.name,
+        amount: parseFloat(checkoutPlan.price.replace(/[^0-9.]/g, "")) || 0,
+      });
+      setCurrentView("payment-success");
     }
 
     setCheckoutPlan(null);
-    setCurrentView("dashboard");
+    localStorage.removeItem("checkoutPlan");
+  };
+
+  const handlePaymentFailure = (errorMessage: string) => {
+    if (checkoutPlan) {
+      setPaymentResult({
+        planName: checkoutPlan.name,
+        amount: parseFloat(checkoutPlan.price.replace(/[^0-9.]/g, "")) || 0,
+        error: errorMessage,
+      });
+    }
+    setCurrentView("payment-failure");
   };
 
   const handleStartTrial = () => {
@@ -799,6 +833,22 @@ export default function App() {
           }}
           onPaymentSuccess={handlePaymentSuccess}
           onOpenLegal={view => setCurrentView(view)}
+        />
+      )}
+
+      {currentView === "payment-success" && (
+        <PaymentSuccess
+          planName={paymentResult?.planName}
+          amount={paymentResult?.amount}
+          onGoHome={() => setCurrentView("dashboard")}
+        />
+      )}
+
+      {currentView === "payment-failure" && (
+        <PaymentFailure
+          errorMessage={paymentResult?.error}
+          onGoHome={() => setCurrentView("home")}
+          onRetry={() => setCurrentView("checkout")}
         />
       )}
 
