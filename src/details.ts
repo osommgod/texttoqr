@@ -33,3 +33,4 @@ export const COMPANY_COUNTRY = "INDIA";
 // Payment Gateway Configuration
 export const STRIPE_PUBLISHABLE_KEY = "pk_test_TYooMQauvdEDq54NiTphI7jx"; // Replace with your Stripe Publishable Key
 export const BRAINTREE_TOKENIZATION_KEY = "sandbox_f252zhq7_hh4cpc39zq4rgjcg"; // Replace with your Braintree Tokenization Key
+export const PAYPAL_CLIENT_ID = "AXDxaxcS_REDZTiIh4-0QJZgYIWEuyTo_12UVbP4YuhM-Qc2IdhYY4L4EwEq4ci-TX8fOulA5u2er-8x"; // Replace with your PayPal Client ID from the dashboard

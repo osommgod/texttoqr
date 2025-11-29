@@ -36,7 +36,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { StripePayment } from "./payment/StripePayment";
-import { BraintreePayment } from "./payment/BraintreePayment";
+import { PayPalPayment } from "./payment/PayPalPayment";
 
 export type PaymentMethod = "card" | "upi" | "gateway";
 
@@ -591,20 +591,20 @@ export function Checkout({
 
       {isPaymentModalOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto"
           onClick={() => setIsPaymentModalOpen(false)}
         >
           <div
-            className="bg-white rounded-lg p-6 w-[90%] sm:w-[80%] md:w-[70%] lg:w-[60%] relative z-[100] max-h-[90vh] overflow-y-auto"
+            className="bg-white rounded-lg p-6 w-[95%] md:w-[80%] lg:w-[60%] relative my-8 max-h-[calc(100vh-4rem)] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setIsPaymentModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl"
+              className="sticky top-0 right-0 float-right text-gray-400 hover:text-gray-600 text-2xl z-10 bg-white rounded-full w-8 h-8 flex items-center justify-center"
             >
               ✕
             </button>
-            <h2 className="text-lg font-semibold mb-2">Complete Payment</h2>
+            <h2 className="text-lg font-semibold mb-2 pr-8">Complete Payment</h2>
             <p className="text-sm text-gray-600 mb-4">
               Enter your payment details to upgrade to the <strong>{plan.name}</strong> plan.
             </p>
@@ -617,8 +617,10 @@ export function Checkout({
                 />
               )}
               {selectedGateway === "PayPal" && (
-                <BraintreePayment
+                <PayPalPayment
                   amount={total}
+                  planType={plan.planType}
+                  userID={user?.id || ""}
                   onSuccess={handlePaymentSuccess}
                   onError={handlePaymentError}
                 />

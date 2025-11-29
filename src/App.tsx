@@ -14,6 +14,7 @@ import { PrivacyPolicy } from "./components/legal/PrivacyPolicy";
 import { RefundCancellationPolicy } from "./components/legal/RefundCancellationPolicy";
 import { SubscriptionBillingPolicy } from "./components/legal/SubscriptionBillingPolicy";
 import { GDPRCompliance } from "./components/legal/GDPRCompliance";
+import { ShippingPolicy } from "./components/legal/ShippingPolicy";
 import {
   QrCode,
   Menu,
@@ -72,7 +73,8 @@ type ViewType =
   | "privacy"
   | "refund"
   | "billing"
-  | "gdpr";
+  | "gdpr"
+  | "shipping";
 
 const getInitialView = (): ViewType => {
   if (typeof window === "undefined") return "home";
@@ -882,6 +884,12 @@ export default function App() {
         </section>
       )}
 
+      {currentView === "shipping" && (
+        <section className="container mx-auto px-4 py-8">
+          <ShippingPolicy />
+        </section>
+      )}
+
       {/* Footer */}
       <footer className="mt-16 bg-[#050b18] border-t border-white/5 text-gray-300">
         <div className="container mx-auto px-6 py-16">
@@ -983,6 +991,14 @@ export default function App() {
                     onClick={() => setCurrentView("gdpr")}
                   >
                     GDPR Compliance
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="hover:text-white transition-colors text-left cursor-pointer"
+                    onClick={() => setCurrentView("shipping")}
+                  >
+                    Shipping & Delivery Policy
                   </button>
                 </li>
               </ul>
